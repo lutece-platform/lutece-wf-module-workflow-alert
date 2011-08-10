@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- DAO -->
+	<bean id="workflow-alert.taskAlertConfigDAO" class="fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfigDAO" />
+	<bean id="workflow-alert.alertDAO" class="fr.paris.lutece.plugins.workflow.modules.alert.business.AlertDAO" />
+
+	<!-- Services -->
+	<bean id="workflow-alert.taskAlertConfigService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService" />
+	<bean id="workflow-alert.alertService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService" />
+
+	<!-- Tasks -->
+	<bean id="workflow-alert.taskAlert" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
+		<property name="key" value="taskAlert" />
+		<property name="titleI18nKey" value="module.workflow.alert.task_alert_title" />
+		<property name="className" value="fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlert"/>
+	</bean>
+</beans>

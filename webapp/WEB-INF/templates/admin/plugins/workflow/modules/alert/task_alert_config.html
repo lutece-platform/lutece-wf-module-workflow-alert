@@ -1,0 +1,46 @@
+<#assign id_directory = -1>
+<#assign position_entry_directory_date = -1>
+<#assign id_state_after_deadline = -1>
+<#assign nb_days_to_date = 0>
+<#if config?exists>
+	<#assign id_directory = config.idDirectory>
+	<#assign position_entry_directory_date = config.positionEntryDirectoryDate>
+	<#assign id_state_after_deadline = config.idStateAfterDeadline>
+	<#assign nb_days_to_date = config.nbDaysToDate>
+</#if>
+
+<h2>#i18n{module.workflow.alert.task_alert_config.title}</h2>
+<div class="highlight-box">
+	<br />
+	<p>
+		<label for="id_directory">#i18n{module.workflow.alert.task_alert_config.label_task_directory} * :</label>
+		<@combo name="id_directory" items=list_directories default_value=id_directory />
+		<input class="button" type="submit" name="apply" value="#i18n{module.workflow.alert.task_alert_config.label_apply}"/>
+	</p>
+	<#if list_entries_date?exists>
+		<p>
+			<label for="position_entry_directory_date">#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date} * :</label>
+			<@combo name="position_entry_directory_date" items=list_entries_date default_value=position_entry_directory_date />&nbsp;
+			<br/>
+			<label>&nbsp;</label>
+			#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date_comment}
+		</p>
+	</#if>
+	<#if list_states?exists>
+		<p>
+			<label for="id_state_after_deadline">#i18n{module.workflow.alert.task_alert_config.label_task_id_state_after_deadline} * :</label>
+			<@combo name="id_state_after_deadline" items=list_states default_value=id_state_after_deadline />&nbsp;
+			<br/>
+			<label>&nbsp;</label>
+			#i18n{module.workflow.alert.task_alert_config.label_task_id_state_after_deadline_comment}
+		</p>
+	</#if>
+	<p>
+		<label for="nb_days_to_date">#i18n{module.workflow.alert.task_alert_config.label_task_nb_days_to_date} * :</label>
+		<input type="text" name="nb_days_to_date" size="3" maxlength="3" value="${nb_days_to_date}" />
+		<br/>
+		<label>&nbsp;</label>
+		#i18n{module.workflow.alert.task_alert_config.label_task_nb_days_to_date_comment}
+	</p>
+	<br />
+</div>
