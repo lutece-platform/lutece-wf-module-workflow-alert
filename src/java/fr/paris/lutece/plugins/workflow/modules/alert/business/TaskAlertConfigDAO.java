@@ -47,14 +47,14 @@ import java.util.List;
  */
 public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date " +
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date, use_creation_date " +
         " FROM task_alert_cf  WHERE id_task = ? ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO task_alert_cf( id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date )" +
-        " VALUES ( ?,?,?,?,? ) ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE task_alert_cf SET id_directory = ?, id_state_after_deadline = ?, position_directory_entry_date = ?, nb_days_to_date = ? " +
+    private static final String SQL_QUERY_INSERT = " INSERT INTO task_alert_cf( id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date, use_creation_date )" +
+        " VALUES ( ?,?,?,?,?,? ) ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE task_alert_cf SET id_directory = ?, id_state_after_deadline = ?, position_directory_entry_date = ?, nb_days_to_date = ?, use_creation_date = ? " +
         " WHERE id_task = ? ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM task_alert_cf WHERE id_task = ? ";
-    private static final String SQL_QUERY_FIND_ALL = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date " +
+    private static final String SQL_QUERY_FIND_ALL = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date, use_creation_date " +
         " FROM task_alert_cf ";
 
     /**
@@ -71,6 +71,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
         daoUtil.setInt( nIndex++, config.getIdStateAfterDeadline(  ) );
         daoUtil.setInt( nIndex++, config.getPositionEntryDirectoryDate(  ) );
         daoUtil.setInt( nIndex++, config.getNbDaysToDate(  ) );
+        daoUtil.setBoolean( nIndex++, config.isUseCreationDate(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -89,7 +90,8 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
         daoUtil.setInt( nIndex++, config.getIdStateAfterDeadline(  ) );
         daoUtil.setInt( nIndex++, config.getPositionEntryDirectoryDate(  ) );
         daoUtil.setInt( nIndex++, config.getNbDaysToDate(  ) );
-
+        daoUtil.setBoolean( nIndex++, config.isUseCreationDate(  ) );
+        
         daoUtil.setInt( nIndex++, config.getIdTask(  ) );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -117,6 +119,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
             config.setIdStateAfterDeadline( daoUtil.getInt( nIndex++ ) );
             config.setPositionEntryDirectoryDate( daoUtil.getInt( nIndex++ ) );
             config.setNbDaysToDate( daoUtil.getInt( nIndex++ ) );
+            config.setUseCreationDate( daoUtil.getBoolean( nIndex++ ) );
         }
 
         daoUtil.free(  );
@@ -156,6 +159,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
             config.setIdStateAfterDeadline( daoUtil.getInt( nIndex++ ) );
             config.setPositionEntryDirectoryDate( daoUtil.getInt( nIndex++ ) );
             config.setNbDaysToDate( daoUtil.getInt( nIndex++ ) );
+            config.setUseCreationDate( daoUtil.getBoolean( nIndex++ ) );
             configList.add( config );
         }
 

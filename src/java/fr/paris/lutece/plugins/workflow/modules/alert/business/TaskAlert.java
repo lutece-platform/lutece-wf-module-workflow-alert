@@ -228,6 +228,8 @@ public class TaskAlert extends Task
             String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
             String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
             String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
+            String strUseCreationDate = request.getParameter( AlertConstants.PARAMETER_USE_CREATION_DATE );
+            boolean bUseCreationDate = StringUtils.isNotBlank( strUseCreationDate );
 
             int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
             int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
@@ -249,6 +251,7 @@ public class TaskAlert extends Task
             config.setPositionEntryDirectoryDate( nPositionEntryDirectoryDate );
             config.setIdStateAfterDeadline( nIdStateAfterDeadline );
             config.setNbDaysToDate( nNbDaysToDate );
+            config.setUseCreationDate( bUseCreationDate );
 
             if ( bCreate )
             {
@@ -314,6 +317,8 @@ public class TaskAlert extends Task
         String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
         String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
         String strApply = request.getParameter( AlertConstants.PARAMETER_APPLY );
+        String strUseCreationDate = request.getParameter( AlertConstants.PARAMETER_USE_CREATION_DATE );
+        boolean bUseCreationDate = StringUtils.isNotBlank( strUseCreationDate );
 
         int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
         int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
@@ -329,7 +334,7 @@ public class TaskAlert extends Task
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_DIRECTORY;
             }
-            else if ( nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL )
+            else if ( !bUseCreationDate && nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL )
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE;
             }

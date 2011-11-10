@@ -69,10 +69,11 @@ public final class AlertConstants
     public static final String PARAMETER_POSITION_ENTRY_DIRECTORY_DATE = "position_entry_directory_date";
     public static final String PARAMETER_ID_STATE_AFTER_DEADLINE = "id_state_after_deadline";
     public static final String PARAMETER_NB_DAYS_TO_DATE = "nb_days_to_date";
+    public static final String PARAMETER_USE_CREATION_DATE = "use_creation_date";
     public static final String PARAMETER_APPLY = "apply";
 
     // MESSAGES
-    public static final String MESSAGE_MANDATORY_FIELD = "module.workflow.alert.message.mandatoryField";
+    public static final String MESSAGE_MANDATORY_FIELD = "module.workflow.alert.message.mandatory_field";
 
     /**
      * Private constructor

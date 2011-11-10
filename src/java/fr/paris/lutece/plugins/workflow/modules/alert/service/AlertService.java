@@ -310,7 +310,10 @@ public final class AlertService
         if ( config != null )
         {
             String strDate = getRecordFieldValue( config.getPositionEntryDirectoryDate(  ), nIdRecord, nIdDirectory );
-            lDate = Long.parseLong( strDate );
+            if ( StringUtils.isNotBlank( strDate ) )
+            {
+            	lDate = Long.parseLong( strDate );
+            }
         }
 
         return lDate;

@@ -8,6 +8,7 @@ CREATE TABLE task_alert_cf(
   id_state_after_deadline INT(11) DEFAULT 0 NOT NULL,
   position_directory_entry_date INT(11) DEFAULT 0 NOT NULL,
   nb_days_to_date INT(11) DEFAULT 0 NOT NULL,
+  use_creation_date SMALLINT DEFAULT 0 NOT NULL,
   PRIMARY KEY (id_task)
 );
 

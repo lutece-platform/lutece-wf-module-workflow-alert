@@ -46,6 +46,7 @@ public class TaskAlertConfig
     private int _nIdStateAfterDeadline;
     private int _nPositionEntryDirectoryDate;
     private int _nNbDaysToDate;
+    private boolean _bUseCreationDate;
 
     /**
      * Get the ID task
@@ -136,4 +137,22 @@ public class TaskAlertConfig
     {
         return _nNbDaysToDate;
     }
+
+    /**
+     * Set true if the date is the creation date
+     * @param bUseCreationDate true if the date is the creation date, false otherwise
+     */
+	public void setUseCreationDate( boolean bUseCreationDate )
+	{
+		_bUseCreationDate = bUseCreationDate;
+	}
+
+	/**
+	 * True if the date is the creation date, false otherwise
+	 * @return true if the date is the creation date, false otherwise
+	 */
+	public boolean isUseCreationDate()
+	{
+		return _bUseCreationDate;
+	}
 }

@@ -33,15 +33,16 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.service.daemon;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 
 /**
@@ -66,20 +67,32 @@ public class AlertDaemon extends Daemon
 
             if ( ( record != null ) && ( config != null ) )
             {
-                int nNbDaysToDate = config.getNbDaysToDate(  );
-                long ldate = alertService.getDate( config, record.getIdRecord(  ),
-                        record.getDirectory(  ).getIdDirectory(  ) );
-
-                Calendar calendar = new GregorianCalendar(  );
-                calendar.setTimeInMillis( ldate );
-                calendar.add( Calendar.DATE, nNbDaysToDate );
-
-                Calendar calendarToday = new GregorianCalendar(  );
-
-                if ( calendar.before( calendarToday ) )
-                {
-                    alertService.doChangeRecordState( config, record.getIdRecord(  ), alert );
-                }
+            	long lDate = 0; 
+            	if ( config.isUseCreationDate() && record.getDateCreation() != null )
+            	{
+            		Timestamp date = record.getDateCreation();
+            		lDate = date.getTime();
+            	}
+            	else
+            	{
+            		lDate = alertService.getDate( config, record.getIdRecord(  ),
+            				record.getDirectory(  ).getIdDirectory(  ) );
+            	}
+            	if ( lDate > 0 )
+            	{
+            		int nNbDaysToDate = config.getNbDaysToDate(  );
+            		
+            		Calendar calendar = new GregorianCalendar(  );
+            		calendar.setTimeInMillis( lDate );
+            		calendar.add( Calendar.DATE, nNbDaysToDate );
+            		
+            		Calendar calendarToday = new GregorianCalendar(  );
+            		
+            		if ( calendar.before( calendarToday ) )
+            		{
+            			alertService.doChangeRecordState( config, record.getIdRecord(  ), alert );
+            		}
+            	}
             }
         }
     }
