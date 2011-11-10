@@ -91,7 +91,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
         daoUtil.setInt( nIndex++, config.getPositionEntryDirectoryDate(  ) );
         daoUtil.setInt( nIndex++, config.getNbDaysToDate(  ) );
         daoUtil.setBoolean( nIndex++, config.isUseCreationDate(  ) );
-        
+
         daoUtil.setInt( nIndex++, config.getIdTask(  ) );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );

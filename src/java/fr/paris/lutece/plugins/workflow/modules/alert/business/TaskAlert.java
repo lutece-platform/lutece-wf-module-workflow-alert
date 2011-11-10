@@ -47,6 +47,7 @@ import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
+import fr.paris.lutece.portal.business.workflow.Action;
 import fr.paris.lutece.portal.business.workflow.State;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -298,7 +299,7 @@ public class TaskAlert extends Task
      */
     public boolean isTaskForActionAutomatic(  )
     {
-        return false;
+        return true;
     }
 
     /**
@@ -334,7 +335,7 @@ public class TaskAlert extends Task
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_DIRECTORY;
             }
-            else if ( !bUseCreationDate && nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL )
+            else if ( !bUseCreationDate && ( nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL ) )
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE;
             }
@@ -352,6 +353,18 @@ public class TaskAlert extends Task
                 Object[] tabRequiredFields = { I18nService.getLocalizedString( strRequiredField, locale ) };
                 strError = AdminMessageService.getMessageUrl( request, AlertConstants.MESSAGE_MANDATORY_FIELD,
                         tabRequiredFields, AdminMessage.TYPE_STOP );
+            }
+
+            if ( StringUtils.isBlank( strError ) )
+            {
+                Action action = AlertService.getService(  ).getAction( getAction(  ).getId(  ) );
+
+                if ( ( action != null ) && ( action.getStateBefore(  ) != null ) &&
+                        ( action.getStateBefore(  ).getId(  ) == nIdStateAfterDeadline ) )
+                {
+                    strError = AdminMessageService.getMessageUrl( request,
+                            AlertConstants.MESSAGE_STATE_AFTER_DEADLINE_SAME_STATE_BEFORE, AdminMessage.TYPE_STOP );
+                }
             }
         }
 

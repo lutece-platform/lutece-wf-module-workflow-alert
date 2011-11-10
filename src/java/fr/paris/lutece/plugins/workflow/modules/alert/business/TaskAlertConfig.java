@@ -142,17 +142,17 @@ public class TaskAlertConfig
      * Set true if the date is the creation date
      * @param bUseCreationDate true if the date is the creation date, false otherwise
      */
-	public void setUseCreationDate( boolean bUseCreationDate )
-	{
-		_bUseCreationDate = bUseCreationDate;
-	}
+    public void setUseCreationDate( boolean bUseCreationDate )
+    {
+        _bUseCreationDate = bUseCreationDate;
+    }
 
-	/**
-	 * True if the date is the creation date, false otherwise
-	 * @return true if the date is the creation date, false otherwise
-	 */
-	public boolean isUseCreationDate()
-	{
-		return _bUseCreationDate;
-	}
+    /**
+     * True if the date is the creation date, false otherwise
+     * @return true if the date is the creation date, false otherwise
+     */
+    public boolean isUseCreationDate(  )
+    {
+        return _bUseCreationDate;
+    }
 }

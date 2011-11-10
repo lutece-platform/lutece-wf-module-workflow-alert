@@ -74,6 +74,7 @@ public final class AlertConstants
 
     // MESSAGES
     public static final String MESSAGE_MANDATORY_FIELD = "module.workflow.alert.message.mandatory_field";
+    public static final String MESSAGE_STATE_AFTER_DEADLINE_SAME_STATE_BEFORE = "module.workflow.alert.message.state_after_deadline_same_state_before";
 
     /**
      * Private constructor

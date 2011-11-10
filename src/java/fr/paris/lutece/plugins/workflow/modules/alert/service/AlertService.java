@@ -310,9 +310,10 @@ public final class AlertService
         if ( config != null )
         {
             String strDate = getRecordFieldValue( config.getPositionEntryDirectoryDate(  ), nIdRecord, nIdDirectory );
+
             if ( StringUtils.isNotBlank( strDate ) )
             {
-            	lDate = Long.parseLong( strDate );
+                lDate = Long.parseLong( strDate );
             }
         }
 
@@ -320,49 +321,18 @@ public final class AlertService
     }
 
     /**
-     * Get the record field value
-     * @param nPosition the position of the entry
-     * @param nIdRecord the id record
-     * @param nIdDirectory the id directory
-     * @return the record field value
+     * Get the action
+     * @param nIdAction the id action
+     * @return the action
      */
-    private String getRecordFieldValue( int nPosition, int nIdRecord, int nIdDirectory )
+    public Action getAction( int nIdAction )
     {
-        String strRecordFieldValue = StringUtils.EMPTY;
-        Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
+        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
 
-        // RecordField
-        EntryFilter entryFilter = new EntryFilter(  );
-        entryFilter.setPosition( nPosition );
-        entryFilter.setIdDirectory( nIdDirectory );
-
-        List<IEntry> listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
-
-        if ( ( listEntries != null ) && !listEntries.isEmpty(  ) )
-        {
-            IEntry entry = listEntries.get( 0 );
-            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter(  );
-            recordFieldFilterEmail.setIdDirectory( nIdDirectory );
-            recordFieldFilterEmail.setIdEntry( entry.getIdEntry(  ) );
-            recordFieldFilterEmail.setIdRecord( nIdRecord );
-
-            List<RecordField> listRecordFields = RecordFieldHome.getRecordFieldList( recordFieldFilterEmail,
-                    pluginDirectory );
-
-            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty(  ) && ( listRecordFields.get( 0 ) != null ) )
-            {
-                RecordField recordFieldIdDemand = listRecordFields.get( 0 );
-                strRecordFieldValue = recordFieldIdDemand.getValue(  );
-
-                if ( recordFieldIdDemand.getField(  ) != null )
-                {
-                    strRecordFieldValue = recordFieldIdDemand.getField(  ).getTitle(  );
-                }
-            }
-        }
-
-        return strRecordFieldValue;
+        return ActionHome.findByPrimaryKey( nIdAction, pluginWorkflow );
     }
+
+    // ACTIONS
 
     /**
      * Do change the record state
@@ -410,6 +380,53 @@ public final class AlertService
                 removeByHistory( alert.getIdResourceHistory(  ), alert.getIdTask(  ) );
             }
         }
+    }
+
+    // PRIVATE METHODS
+
+    /**
+     * Get the record field value
+     * @param nPosition the position of the entry
+     * @param nIdRecord the id record
+     * @param nIdDirectory the id directory
+     * @return the record field value
+     */
+    private String getRecordFieldValue( int nPosition, int nIdRecord, int nIdDirectory )
+    {
+        String strRecordFieldValue = StringUtils.EMPTY;
+        Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
+
+        // RecordField
+        EntryFilter entryFilter = new EntryFilter(  );
+        entryFilter.setPosition( nPosition );
+        entryFilter.setIdDirectory( nIdDirectory );
+
+        List<IEntry> listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
+
+        if ( ( listEntries != null ) && !listEntries.isEmpty(  ) )
+        {
+            IEntry entry = listEntries.get( 0 );
+            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter(  );
+            recordFieldFilterEmail.setIdDirectory( nIdDirectory );
+            recordFieldFilterEmail.setIdEntry( entry.getIdEntry(  ) );
+            recordFieldFilterEmail.setIdRecord( nIdRecord );
+
+            List<RecordField> listRecordFields = RecordFieldHome.getRecordFieldList( recordFieldFilterEmail,
+                    pluginDirectory );
+
+            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty(  ) && ( listRecordFields.get( 0 ) != null ) )
+            {
+                RecordField recordFieldIdDemand = listRecordFields.get( 0 );
+                strRecordFieldValue = recordFieldIdDemand.getValue(  );
+
+                if ( recordFieldIdDemand.getField(  ) != null )
+                {
+                    strRecordFieldValue = recordFieldIdDemand.getField(  ).getTitle(  );
+                }
+            }
+        }
+
+        return strRecordFieldValue;
     }
 
     /**
