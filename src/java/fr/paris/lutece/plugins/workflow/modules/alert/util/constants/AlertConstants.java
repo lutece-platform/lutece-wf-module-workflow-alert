@@ -57,19 +57,22 @@ public final class AlertConstants
     public static final String PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE = "module.workflow.alert.task_alert_config.label_task_entry_directory_date";
     public static final String PROPERTY_LABEL_ID_STATE_AFTER_DEADLINE = "module.workflow.alert.task_alert_config.label_task_id_state_after_deadline";
     public static final String PROPERTY_LABEL_NB_DAYS_TO_DATE = "module.workflow.alert.task_alert_config.label_task_nb_days_to_date";
+    public static final String PROPERTY_LABEL_RETRIEVAL_TYPE = "module.workflow.alert.task_alert_config.label_task_retrieval_type";
 
     // MARKS
     public static final String MARK_CONFIG = "config";
     public static final String MARK_LIST_DIRECTORIES = "list_directories";
     public static final String MARK_LIST_STATES = "list_states";
     public static final String MARK_LIST_ENTRIES_DATE = "list_entries_date";
+    public static final String MARK_RETRIEVAL_TYPES = "retrieval_types";
+    public static final String MARK_LOCALE = "locale";
 
     // PARAMETERS
     public static final String PARAMETER_ID_DIRECTORY = "id_directory";
     public static final String PARAMETER_POSITION_ENTRY_DIRECTORY_DATE = "position_entry_directory_date";
     public static final String PARAMETER_ID_STATE_AFTER_DEADLINE = "id_state_after_deadline";
     public static final String PARAMETER_NB_DAYS_TO_DATE = "nb_days_to_date";
-    public static final String PARAMETER_USE_CREATION_DATE = "use_creation_date";
+    public static final String PARAMETER_RETRIEVAL_TYPE = "retrieval_type";
     public static final String PARAMETER_APPLY = "apply";
 
     // MESSAGES

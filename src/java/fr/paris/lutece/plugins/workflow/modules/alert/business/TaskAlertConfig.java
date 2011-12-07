@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.business;
 
+import fr.paris.lutece.plugins.directory.business.Record;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.IRetrievalType;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory;
+
 
 /**
  *
@@ -46,7 +50,7 @@ public class TaskAlertConfig
     private int _nIdStateAfterDeadline;
     private int _nPositionEntryDirectoryDate;
     private int _nNbDaysToDate;
-    private boolean _bUseCreationDate;
+    private int _nIdRetrievalType;
 
     /**
      * Get the ID task
@@ -139,20 +143,37 @@ public class TaskAlertConfig
     }
 
     /**
-     * Set true if the date is the creation date
-     * @param bUseCreationDate true if the date is the creation date, false otherwise
+     * Set the id retrieval type
+     * @param nIdRetrievalType the id retrieval type
      */
-    public void setUseCreationDate( boolean bUseCreationDate )
+    public void setIdRetrievalType( int nIdRetrievalType )
     {
-        _bUseCreationDate = bUseCreationDate;
+        _nIdRetrievalType = nIdRetrievalType;
     }
 
     /**
-     * True if the date is the creation date, false otherwise
-     * @return true if the date is the creation date, false otherwise
+     * Get the id retrieval type
+     * @return the id retrieval type
      */
-    public boolean isUseCreationDate(  )
+    public int getIdRetrievalType(  )
     {
-        return _bUseCreationDate;
+        return _nIdRetrievalType;
+    }
+
+    /**
+     * Get the retrieval type
+     * @param record the record
+     * @return the retrieval type
+     */
+    public Long getDate( Record record )
+    {
+        IRetrievalType retrievalType = RetrievalTypeFactory.getFactory(  ).getRetrievalType( _nIdRetrievalType );
+
+        if ( retrievalType != null )
+        {
+            return retrievalType.getDate( this, record );
+        }
+
+        return null;
     }
 }

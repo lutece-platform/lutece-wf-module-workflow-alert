@@ -2,15 +2,11 @@
 <#assign position_entry_directory_date = -1>
 <#assign id_state_after_deadline = -1>
 <#assign nb_days_to_date = 0>
-<#assign use_creation_date = false>
 <#if config?exists>
 	<#assign id_directory = config.idDirectory>
 	<#assign position_entry_directory_date = config.positionEntryDirectoryDate>
 	<#assign id_state_after_deadline = config.idStateAfterDeadline>
 	<#assign nb_days_to_date = config.nbDaysToDate>
-	<#if config.useCreationDate>
-		<#assign use_creation_date = true>
-	</#if>
 </#if>
 
 <h2>#i18n{module.workflow.alert.task_alert_config.title}</h2>
@@ -21,14 +17,20 @@
 		<@combo name="id_directory" items=list_directories default_value=id_directory />
 		<input class="button" type="submit" name="apply" value="#i18n{module.workflow.alert.task_alert_config.label_apply}"/>
 	</p>
-	<p>
-		<label for="id_directory">#i18n{module.workflow.alert.task_alert_config.label_task_use_creation_date} :</label>
-		<input type="checkbox" value="1" name="use_creation_date" <#if use_creation_date>checked="checked"</#if> />
-		<br />
-		<label>&nbsp;</label>
-		#i18n{module.workflow.alert.task_alert_config.label_task_use_creation_date_comment}
-	</p>
-	<#if !use_creation_date && list_entries_date?exists>
+	<#if retrieval_types?? && retrieval_types?has_content>
+		<p>
+			<label for="retrieval_type">#i18n{module.workflow.alert.task_alert_config.label_task_retrieval_type} * :</label>
+			<#list retrieval_types?keys as id_retrieval_type>
+				<#assign retrieval_type = retrieval_types[id_retrieval_type]>
+				<input type="radio" name="retrieval_type" value="${id_retrieval_type}"
+					<#if config?? && id_retrieval_type = "" + config.idRetrievalType>
+						checked="checked"
+					</#if>
+				/>&nbsp;${retrieval_type.getTitle( locale )}
+			</#list>
+		</p>
+	</#if>
+	<#if config?? && config.idRetrievalType = 1 && list_entries_date??>
 		<p>
 			<label for="position_entry_directory_date">#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date} * :</label>
 			<@combo name="position_entry_directory_date" items=list_entries_date default_value=position_entry_directory_date />&nbsp;

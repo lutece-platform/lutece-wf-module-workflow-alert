@@ -31,63 +31,59 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.alert.service.daemon;
+package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
 
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
+import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
-import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
-import fr.paris.lutece.portal.service.daemon.Daemon;
-import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import org.apache.commons.lang.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  *
- * Daemon AlertDaemon
+ * RetrievalTypeDirectoryEntry
  *
  */
-public class AlertDaemon extends Daemon
+public class RetrievalTypeDirectoryEntry extends AbstractRetrievalType
 {
     /**
-     * Daemon's treatment method
+     * {@inheritDoc}
      */
-    public void run(  )
+    public Long getDate( TaskAlertConfig config, Record record )
     {
-        TaskAlertConfigService configService = TaskAlertConfigService.getService(  );
-        AlertService alertService = AlertService.getService(  );
-
-        for ( Alert alert : alertService.findAll(  ) )
+        if ( ( config != null ) && ( record != null ) && ( record.getDirectory(  ) != null ) )
         {
-            Record record = alertService.getRecord( alert );
-            TaskAlertConfig config = configService.findByPrimaryKey( alert.getIdTask(  ) );
+            String strDate = AlertService.getService(  )
+                                         .getRecordFieldValue( config.getPositionEntryDirectoryDate(  ),
+                    record.getIdRecord(  ), record.getDirectory(  ).getIdDirectory(  ) );
 
-            Locale locale = I18nService.getDefaultLocale(  );
-
-            if ( ( record != null ) && ( config != null ) && alertService.isRecordStateValid( config, record, locale ) )
+            if ( StringUtils.isNotBlank( strDate ) )
             {
-                Long lDate = config.getDate( record );
-
-                if ( lDate != null )
-                {
-                    int nNbDaysToDate = config.getNbDaysToDate(  );
-
-                    Calendar calendar = new GregorianCalendar(  );
-                    calendar.setTimeInMillis( lDate );
-                    calendar.add( Calendar.DATE, nNbDaysToDate );
-
-                    Calendar calendarToday = new GregorianCalendar(  );
-
-                    if ( calendar.before( calendarToday ) )
-                    {
-                        alertService.doChangeRecordState( config, record.getIdRecord(  ), alert );
-                    }
-                }
+                return Long.parseLong( strDate );
             }
         }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String checkConfigData( HttpServletRequest request )
+    {
+        String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
+        int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
+
+        if ( nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL )
+        {
+            return AlertConstants.PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE;
+        }
+
+        return null;
     }
 }

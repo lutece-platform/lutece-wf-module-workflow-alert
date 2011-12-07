@@ -10,6 +10,29 @@
 	<bean id="workflow-alert.taskAlertConfigService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService" />
 	<bean id="workflow-alert.alertService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService" />
 
+	<!-- Retrieval type -->
+	<bean id="workflow-alert.retrievalTypeDirectoryEntry" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeDirectoryEntry">
+		<property name="idType" value="1" />
+		<property name="titleKey" value="module.workflow.alert.retrieval_type.directory_entry" />
+	</bean>
+	<bean id="workflow-alert.retrievalTypeCreationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeCreationDate">
+		<property name="idType" value="2" />
+		<property name="titleKey" value="module.workflow.alert.retrieval_type.creation_date" />
+	</bean>
+	<bean id="workflow-alert.retrievalTypeModificationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeModificationDate">
+		<property name="idType" value="3" />
+		<property name="titleKey" value="module.workflow.alert.retrieval_type.modification_date" />
+	</bean>
+	<bean id="workflow-alert.retrievalTypeFactory" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory">
+		<property name="retrievalTypes">
+			<map>
+				<entry key="1" value-ref="workflow-alert.retrievalTypeDirectoryEntry" />
+				<entry key="2" value-ref="workflow-alert.retrievalTypeCreationDate" />
+				<entry key="3" value-ref="workflow-alert.retrievalTypeModificationDate" />
+			</map>
+		</property>
+	</bean>
+	
 	<!-- Tasks -->
 	<bean id="workflow-alert.taskAlert" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
 		<property name="key" value="taskAlert" />

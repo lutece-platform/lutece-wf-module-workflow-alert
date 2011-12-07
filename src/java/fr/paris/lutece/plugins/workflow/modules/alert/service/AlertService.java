@@ -176,6 +176,40 @@ public final class AlertService
         return bIsAccepted;
     }
 
+    /**
+     * Check if the record has the same state before executing the action
+     * @param config the config
+     * @param record the record
+     * @param locale the locale
+     * @return true if the record has a valid state, false otherwise
+     */
+    public boolean isRecordStateValid( TaskAlertConfig config, Record record, Locale locale )
+    {
+        boolean bIsValid = false;
+
+        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
+        ITask task = TaskHome.findByPrimaryKey( config.getIdTask(  ), pluginWorkflow, locale );
+
+        if ( task != null )
+        {
+            Action action = ActionHome.findByPrimaryKey( task.getAction(  ).getId(  ), pluginWorkflow );
+
+            if ( ( action != null ) && ( action.getStateAfter(  ) != null ) )
+            {
+                ResourceWorkflow resourceWorkflow = ResourceWorkflowHome.findByPrimaryKey( record.getIdRecord(  ),
+                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ), pluginWorkflow );
+
+                if ( ( resourceWorkflow != null ) && ( resourceWorkflow.getState(  ) != null ) &&
+                        ( resourceWorkflow.getState(  ).getId(  ) == action.getStateAfter(  ).getId(  ) ) )
+                {
+                    bIsValid = true;
+                }
+            }
+        }
+
+        return bIsValid;
+    }
+
     // GET
 
     /**
@@ -332,6 +366,51 @@ public final class AlertService
         return ActionHome.findByPrimaryKey( nIdAction, pluginWorkflow );
     }
 
+    /**
+     * Get the record field value
+     * @param nPosition the position of the entry
+     * @param nIdRecord the id record
+     * @param nIdDirectory the id directory
+     * @return the record field value
+     */
+    public String getRecordFieldValue( int nPosition, int nIdRecord, int nIdDirectory )
+    {
+        String strRecordFieldValue = StringUtils.EMPTY;
+        Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
+
+        // RecordField
+        EntryFilter entryFilter = new EntryFilter(  );
+        entryFilter.setPosition( nPosition );
+        entryFilter.setIdDirectory( nIdDirectory );
+
+        List<IEntry> listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
+
+        if ( ( listEntries != null ) && !listEntries.isEmpty(  ) )
+        {
+            IEntry entry = listEntries.get( 0 );
+            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter(  );
+            recordFieldFilterEmail.setIdDirectory( nIdDirectory );
+            recordFieldFilterEmail.setIdEntry( entry.getIdEntry(  ) );
+            recordFieldFilterEmail.setIdRecord( nIdRecord );
+
+            List<RecordField> listRecordFields = RecordFieldHome.getRecordFieldList( recordFieldFilterEmail,
+                    pluginDirectory );
+
+            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty(  ) && ( listRecordFields.get( 0 ) != null ) )
+            {
+                RecordField recordFieldIdDemand = listRecordFields.get( 0 );
+                strRecordFieldValue = recordFieldIdDemand.getValue(  );
+
+                if ( recordFieldIdDemand.getField(  ) != null )
+                {
+                    strRecordFieldValue = recordFieldIdDemand.getField(  ).getTitle(  );
+                }
+            }
+        }
+
+        return strRecordFieldValue;
+    }
+
     // ACTIONS
 
     /**
@@ -383,51 +462,6 @@ public final class AlertService
     }
 
     // PRIVATE METHODS
-
-    /**
-     * Get the record field value
-     * @param nPosition the position of the entry
-     * @param nIdRecord the id record
-     * @param nIdDirectory the id directory
-     * @return the record field value
-     */
-    private String getRecordFieldValue( int nPosition, int nIdRecord, int nIdDirectory )
-    {
-        String strRecordFieldValue = StringUtils.EMPTY;
-        Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
-
-        // RecordField
-        EntryFilter entryFilter = new EntryFilter(  );
-        entryFilter.setPosition( nPosition );
-        entryFilter.setIdDirectory( nIdDirectory );
-
-        List<IEntry> listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
-
-        if ( ( listEntries != null ) && !listEntries.isEmpty(  ) )
-        {
-            IEntry entry = listEntries.get( 0 );
-            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter(  );
-            recordFieldFilterEmail.setIdDirectory( nIdDirectory );
-            recordFieldFilterEmail.setIdEntry( entry.getIdEntry(  ) );
-            recordFieldFilterEmail.setIdRecord( nIdRecord );
-
-            List<RecordField> listRecordFields = RecordFieldHome.getRecordFieldList( recordFieldFilterEmail,
-                    pluginDirectory );
-
-            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty(  ) && ( listRecordFields.get( 0 ) != null ) )
-            {
-                RecordField recordFieldIdDemand = listRecordFields.get( 0 );
-                strRecordFieldValue = recordFieldIdDemand.getValue(  );
-
-                if ( recordFieldIdDemand.getField(  ) != null )
-                {
-                    strRecordFieldValue = recordFieldIdDemand.getField(  ).getTitle(  );
-                }
-            }
-        }
-
-        return strRecordFieldValue;
-    }
 
     /**
      * Build the reference entry into String

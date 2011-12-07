@@ -31,63 +31,46 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.alert.service.daemon;
+package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
 
 import fr.paris.lutece.plugins.directory.business.Record;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
-import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
-import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
-import fr.paris.lutece.portal.service.daemon.Daemon;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.sql.Timestamp;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  *
- * Daemon AlertDaemon
+ * RetrievalTypeModificationDate
  *
  */
-public class AlertDaemon extends Daemon
+public class RetrievalTypeModificationDate extends AbstractRetrievalType
 {
     /**
-     * Daemon's treatment method
+     * {@inheritDoc}
      */
-    public void run(  )
+    public Long getDate( TaskAlertConfig config, Record record )
     {
-        TaskAlertConfigService configService = TaskAlertConfigService.getService(  );
-        AlertService alertService = AlertService.getService(  );
-
-        for ( Alert alert : alertService.findAll(  ) )
+        if ( record != null )
         {
-            Record record = alertService.getRecord( alert );
-            TaskAlertConfig config = configService.findByPrimaryKey( alert.getIdTask(  ) );
+            Timestamp date = record.getDateModification(  );
 
-            Locale locale = I18nService.getDefaultLocale(  );
-
-            if ( ( record != null ) && ( config != null ) && alertService.isRecordStateValid( config, record, locale ) )
+            if ( date != null )
             {
-                Long lDate = config.getDate( record );
-
-                if ( lDate != null )
-                {
-                    int nNbDaysToDate = config.getNbDaysToDate(  );
-
-                    Calendar calendar = new GregorianCalendar(  );
-                    calendar.setTimeInMillis( lDate );
-                    calendar.add( Calendar.DATE, nNbDaysToDate );
-
-                    Calendar calendarToday = new GregorianCalendar(  );
-
-                    if ( calendar.before( calendarToday ) )
-                    {
-                        alertService.doChangeRecordState( config, record.getIdRecord(  ), alert );
-                    }
-                }
+                return date.getTime(  );
             }
         }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String checkConfigData( HttpServletRequest request )
+    {
+        return null;
     }
 }

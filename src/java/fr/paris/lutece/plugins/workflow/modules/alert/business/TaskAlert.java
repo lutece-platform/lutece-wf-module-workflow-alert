@@ -43,6 +43,8 @@ import fr.paris.lutece.plugins.workflow.business.ResourceHistory;
 import fr.paris.lutece.plugins.workflow.business.ResourceHistoryHome;
 import fr.paris.lutece.plugins.workflow.business.StateHome;
 import fr.paris.lutece.plugins.workflow.business.task.Task;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.IRetrievalType;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
@@ -136,6 +138,8 @@ public class TaskAlert extends Task
         model.put( AlertConstants.MARK_LIST_DIRECTORIES, alertService.getListDirectories(  ) );
         model.put( AlertConstants.MARK_LIST_ENTRIES_DATE,
             alertService.getListEntriesDate( getId(  ), request.getLocale(  ) ) );
+        model.put( AlertConstants.MARK_RETRIEVAL_TYPES, RetrievalTypeFactory.getFactory(  ).getRetrievalTypes(  ) );
+        model.put( AlertConstants.MARK_LOCALE, locale );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_ALERT_CONFIG, locale, model );
 
@@ -229,13 +233,13 @@ public class TaskAlert extends Task
             String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
             String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
             String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
-            String strUseCreationDate = request.getParameter( AlertConstants.PARAMETER_USE_CREATION_DATE );
-            boolean bUseCreationDate = StringUtils.isNotBlank( strUseCreationDate );
+            String strIdRetrievalType = request.getParameter( AlertConstants.PARAMETER_RETRIEVAL_TYPE );
 
             int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
             int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
             int nIdStateAfterDeadline = DirectoryUtils.convertStringToInt( strIdStateAfterDeadline );
-            int nNbDaysToDate = Integer.parseInt( strNbDaysToDate );
+            int nNbDaysToDate = DirectoryUtils.convertStringToInt( strNbDaysToDate );
+            int nIdRetrievalType = DirectoryUtils.convertStringToInt( strIdRetrievalType );
 
             // In case there are no errors, then the config is created/updated
             boolean bCreate = false;
@@ -252,7 +256,7 @@ public class TaskAlert extends Task
             config.setPositionEntryDirectoryDate( nPositionEntryDirectoryDate );
             config.setIdStateAfterDeadline( nIdStateAfterDeadline );
             config.setNbDaysToDate( nNbDaysToDate );
-            config.setUseCreationDate( bUseCreationDate );
+            config.setIdRetrievalType( nIdRetrievalType );
 
             if ( bCreate )
             {
@@ -314,16 +318,14 @@ public class TaskAlert extends Task
 
         // Fetch parameters
         String strIdDirectory = request.getParameter( AlertConstants.PARAMETER_ID_DIRECTORY );
-        String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
         String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
         String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
         String strApply = request.getParameter( AlertConstants.PARAMETER_APPLY );
-        String strUseCreationDate = request.getParameter( AlertConstants.PARAMETER_USE_CREATION_DATE );
-        boolean bUseCreationDate = StringUtils.isNotBlank( strUseCreationDate );
+        String strIdRetrievalType = request.getParameter( AlertConstants.PARAMETER_RETRIEVAL_TYPE );
 
         int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
-        int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
         int nIdStateAfterDeadline = DirectoryUtils.convertStringToInt( strIdStateAfterDeadline );
+        int nIdRetrievalType = DirectoryUtils.convertStringToInt( strIdRetrievalType );
 
         // Check if the AdminUser clicked on "Apply" or on "Save"
         if ( StringUtils.isEmpty( strApply ) )
@@ -335,9 +337,9 @@ public class TaskAlert extends Task
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_DIRECTORY;
             }
-            else if ( !bUseCreationDate && ( nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL ) )
+            else if ( StringUtils.isBlank( strIdRetrievalType ) || !StringUtils.isNumeric( strIdRetrievalType ) )
             {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE;
+                strRequiredField = AlertConstants.PROPERTY_LABEL_RETRIEVAL_TYPE;
             }
             else if ( nIdStateAfterDeadline == DirectoryUtils.CONSTANT_ID_NULL )
             {
@@ -346,6 +348,17 @@ public class TaskAlert extends Task
             else if ( StringUtils.isBlank( strNbDaysToDate ) )
             {
                 strRequiredField = AlertConstants.PROPERTY_LABEL_NB_DAYS_TO_DATE;
+            }
+
+            IRetrievalType retrievalType = RetrievalTypeFactory.getFactory(  ).getRetrievalType( nIdRetrievalType );
+
+            if ( retrievalType == null )
+            {
+                strRequiredField = AlertConstants.PROPERTY_LABEL_RETRIEVAL_TYPE;
+            }
+            else
+            {
+                strRequiredField = retrievalType.checkConfigData( request );
             }
 
             if ( StringUtils.isNotBlank( strRequiredField ) )
