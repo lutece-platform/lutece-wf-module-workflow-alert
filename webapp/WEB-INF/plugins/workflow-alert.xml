@@ -34,5 +34,17 @@
 				fr.paris.lutece.plugins.workflow.modules.alert.service.daemon.AlertDaemon
 			</daemon-class>
 		</daemon>
+		<daemon>
+			<daemon-id>alertCleaner</daemon-id>
+			<daemon-name>
+				module.workflow.alert.daemon.alertCleaner.name
+			</daemon-name>
+			<daemon-description>
+				module.workflow.alert.daemon.alertCleaner.description
+			</daemon-description>
+			<daemon-class>
+				fr.paris.lutece.plugins.workflow.modules.alert.service.daemon.AlertCleanerDaemon
+			</daemon-class>
+		</daemon>
 	</daemons>
 </plug-in>

@@ -43,17 +43,15 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 
 /**
  *
- * Daemon AlertDaemon
+ * Daemon AlertCleanerDaemon
  *
  */
-public class AlertDaemon extends Daemon
+public class AlertCleanerDaemon extends Daemon
 {
     /**
      * Daemon's treatment method
@@ -71,33 +69,19 @@ public class AlertDaemon extends Daemon
 
             Locale locale = I18nService.getDefaultLocale(  );
 
-            if ( ( record != null ) && ( config != null ) && alertService.isRecordStateValid( config, record, locale ) )
+            if ( ( record != null ) && ( config != null ) &&
+                    !alertService.isRecordStateValid( config, record, locale ) )
             {
-                Long lDate = alert.getDateReference(  ).getTime(  );
-
-                if ( lDate != null )
-                {
-                    int nNbDaysToDate = config.getNbDaysToDate(  );
-
-                    Calendar calendar = new GregorianCalendar(  );
-                    calendar.setTimeInMillis( lDate );
-                    calendar.add( Calendar.DATE, nNbDaysToDate );
-
-                    Calendar calendarToday = new GregorianCalendar(  );
-
-                    if ( calendar.before( calendarToday ) )
-                    {
-                        sbLog.append( "\n-Running alert (ID record : " + record.getIdRecord(  ) + ", ID history : " +
-                            alert.getIdResourceHistory(  ) + ", ID task : " + alert.getIdTask(  ) + ")" );
-                        alertService.doChangeRecordState( config, record.getIdRecord(  ), alert );
-                    }
-                }
+                sbLog.append( "\n- Cleaning alert (ID record : " + record.getIdRecord(  ) + ", ID history : " +
+                    alert.getIdResourceHistory(  ) + ", ID task : " + alert.getIdTask(  ) + ")" );
+                // Remove the Alert
+                alertService.removeByHistory( alert.getIdResourceHistory(  ), alert.getIdTask(  ) );
             }
         }
 
         if ( StringUtils.isBlank( sbLog.toString(  ) ) )
         {
-            sbLog.append( "\nNo alert to run." );
+            sbLog.append( "\nNo alert to clean." );
         }
 
         setLastRunLogs( sbLog.toString(  ) );
