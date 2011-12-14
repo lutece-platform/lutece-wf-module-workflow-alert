@@ -70,7 +70,7 @@ public class AlertDaemon extends Daemon
 
             if ( ( record != null ) && ( config != null ) && alertService.isRecordStateValid( config, record, locale ) )
             {
-                Long lDate = config.getDate( record );
+                Long lDate = alert.getDateReference(  ).getTime(  );
 
                 if ( lDate != null )
                 {

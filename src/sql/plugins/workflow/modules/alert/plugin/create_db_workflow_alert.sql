@@ -19,5 +19,6 @@ DROP TABLE IF EXISTS task_alert;
 CREATE TABLE task_alert(
   id_history INT(11) DEFAULT 0 NOT NULL,
   id_task INT(11) DEFAULT 0 NOT NULL,
+  reference_date TIMESTAMP DEFAULT NULL NULL,
   PRIMARY KEY (id_history, id_task)
 );

@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 
-import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,12 +55,16 @@ public class RetrievalTypeModificationDate extends AbstractRetrievalType
     {
         if ( record != null )
         {
-            Timestamp date = record.getDateModification(  );
-
-            if ( date != null )
-            {
-                return date.getTime(  );
-            }
+            /*
+             * The modification date of the record is updated only after all
+             * tasks are executed. In other words, this task would retrieve
+             * the old modification date before the execution of the action.
+             * Ex : We have a record with
+             *  - modification date : 14/12/2012
+             *  - execution date of the task : 15/12/2012
+             * The reference date should not be 14/12/2012 but 15/12/2012.
+             */
+            return GregorianCalendar.getInstance(  ).getTimeInMillis(  );
         }
 
         return null;

@@ -62,6 +62,8 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.sql.Timestamp;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -113,9 +115,11 @@ public class TaskAlert extends Task
 
                     if ( alert == null )
                     {
+                        Long lDate = config.getDate( record );
                         alert = new Alert(  );
                         alert.setIdResourceHistory( nIdResourceHistory );
                         alert.setIdTask( getId(  ) );
+                        alert.setDateReference( new Timestamp( lDate ) );
                         AlertService.getService(  ).create( alert );
                     }
                 }

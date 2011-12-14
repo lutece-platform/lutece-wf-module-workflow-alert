@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.business;
 
+import java.sql.Timestamp;
+
 
 /**
  *
@@ -43,6 +45,7 @@ public class Alert
 {
     private int _nIdResourceHistory;
     private int _nIdTask;
+    private Timestamp _dateReference;
 
     /**
      * Set the id resource history
@@ -78,5 +81,23 @@ public class Alert
     public int getIdTask(  )
     {
         return _nIdTask;
+    }
+
+    /**
+     * Set the reference date
+     * @param dateReference the dateReference to set
+     */
+    public void setDateReference( Timestamp dateReference )
+    {
+        _dateReference = dateReference;
+    }
+
+    /**
+     * Get the reference date
+     * @return the dateReference
+     */
+    public Timestamp getDateReference(  )
+    {
+        return _dateReference;
     }
 }

@@ -47,12 +47,12 @@ import java.util.List;
  */
 public class AlertDAO implements IAlertDAO
 {
-    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY = " SELECT id_history, id_task " +
+    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY = " SELECT id_history, id_task, reference_date " +
         " FROM task_alert WHERE id_history = ? AND id_task = ?";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO task_alert ( id_history, id_task ) VALUES ( ?,? ) ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO task_alert ( id_history, id_task, reference_date ) VALUES ( ?,?,? ) ";
     private static final String SQL_QUERY_DELETE_BY_HISTORY = " DELETE FROM task_alert WHERE id_history = ? AND id_task = ? ";
     private static final String SQL_QUERY_DELETE_BY_TASK = " DELETE FROM task_alert WHERE id_task = ? ";
-    private static final String SQL_QUERY_SELECT_ALL = " SELECT id_history, id_task FROM task_alert ";
+    private static final String SQL_QUERY_SELECT_ALL = " SELECT id_history, id_task, reference_date FROM task_alert ";
 
     /**
      * {@inheritDoc}
@@ -65,6 +65,7 @@ public class AlertDAO implements IAlertDAO
 
         daoUtil.setInt( nIndex++, alertValue.getIdResourceHistory(  ) );
         daoUtil.setInt( nIndex++, alertValue.getIdTask(  ) );
+        daoUtil.setTimestamp( nIndex++, alertValue.getDateReference(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -90,6 +91,7 @@ public class AlertDAO implements IAlertDAO
             alert = new Alert(  );
             alert.setIdResourceHistory( daoUtil.getInt( nIndex++ ) );
             alert.setIdTask( daoUtil.getInt( nIndex++ ) );
+            alert.setDateReference( daoUtil.getTimestamp( nIndex++ ) );
         }
 
         daoUtil.free(  );
@@ -139,6 +141,7 @@ public class AlertDAO implements IAlertDAO
             Alert alert = new Alert(  );
             alert.setIdResourceHistory( daoUtil.getInt( nIndex++ ) );
             alert.setIdTask( daoUtil.getInt( nIndex++ ) );
+            alert.setDateReference( daoUtil.getTimestamp( nIndex++ ) );
             listAlerts.add( alert );
         }
 
