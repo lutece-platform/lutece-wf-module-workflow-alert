@@ -33,11 +33,15 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.service;
 
+import fr.paris.lutece.plugins.workflow.modules.alert.business.ITaskAlertConfigDAO;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfigHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 
 /**
@@ -45,76 +49,63 @@ import java.util.List;
  * TaskAlertConfigService
  *
  */
-public final class TaskAlertConfigService
+public final class TaskAlertConfigService implements ITaskAlertConfigService
 {
-    private static final String BEAN_TASK_NOTIFY_CRM_CONFIG_SERVICE = "workflow-alert.taskAlertConfigService";
+    public static final String BEAN_SERVICE = "workflow-alert.taskAlertConfigService";
+    @Inject
+    private ITaskAlertConfigDAO _taskAlertConfigDAO;
 
     /**
-     * Private constructor
+     * {@inheritDoc}
      */
-    private TaskAlertConfigService(  )
-    {
-    }
-
-    /**
-     * Get the instance of {@link TaskAlertConfigService}
-     * @return the instance of {@link TaskAlertConfigService}
-     */
-    public static TaskAlertConfigService getService(  )
-    {
-        return (TaskAlertConfigService) SpringContextService.getPluginBean( AlertPlugin.PLUGIN_NAME,
-            BEAN_TASK_NOTIFY_CRM_CONFIG_SERVICE );
-    }
-
-    /**
-     * Create a new config
-     * @param config the config
-     */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void create( TaskAlertConfig config )
     {
         if ( config != null )
         {
-            TaskAlertConfigHome.create( config );
+            _taskAlertConfigDAO.insert( config, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
         }
     }
 
     /**
-     * Update a config
-     * @param config the config
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void update( TaskAlertConfig config )
     {
         if ( config != null )
         {
-            TaskAlertConfigHome.update( config );
+            _taskAlertConfigDAO.store( config, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
         }
     }
 
     /**
-     * Remove a config
-     * @param nIdTask the task id
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void remove( int nIdTask )
     {
-        TaskAlertConfigHome.remove( nIdTask );
+        _taskAlertConfigDAO.delete( nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     /**
-     * Find a config
-     * @param nIdTask the id task
-     * @return an instance of {@link TaskAlertConfig}
+     * {@inheritDoc}
      */
+    @Override
     public TaskAlertConfig findByPrimaryKey( int nIdTask )
     {
-        return TaskAlertConfigHome.findByPrimaryKey( nIdTask );
+        return _taskAlertConfigDAO.load( nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     /**
-     * Get all configs
-     * @return a list of {@link TaskAlertConfig}
+     * {@inheritDoc}
      */
+    @Override
     public List<TaskAlertConfig> findAll(  )
     {
-        return TaskAlertConfigHome.findAll(  );
+        return _taskAlertConfigDAO.loadAll( PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 }

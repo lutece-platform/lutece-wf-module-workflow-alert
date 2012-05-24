@@ -33,11 +33,9 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
 
-import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertPlugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 
 /**
@@ -47,9 +45,6 @@ import java.util.Map;
  */
 public final class RetrievalTypeFactory
 {
-    private static final String BEAN_RETRIEVAL_TYPE_FACTORY = "workflow-alert.retrievalTypeFactory";
-    private Map<String, IRetrievalType> _mapRetrievalTypes;
-
     /**
      * Private constructor
      */
@@ -58,63 +53,29 @@ public final class RetrievalTypeFactory
     }
 
     /**
-     * Get the factory
-     * @return the factory
-     */
-    public static RetrievalTypeFactory getFactory(  )
-    {
-        return (RetrievalTypeFactory) SpringContextService.getPluginBean( AlertPlugin.PLUGIN_NAME,
-            BEAN_RETRIEVAL_TYPE_FACTORY );
-    }
-
-    /**
-     * Set the retrieval types
-     * @param mapRetrievalTypes the retrieval types
-     */
-    public void setRetrievalTypes( Map<String, IRetrievalType> mapRetrievalTypes )
-    {
-        _mapRetrievalTypes = mapRetrievalTypes;
-    }
-
-    /**
      * Get the retrieval type
-     * @return a map of (id_retrieval_type, {@link IRetrievalType}
+     * @return a list of {@link IRetrievalType}
      */
-    public Map<String, IRetrievalType> getRetrievalTypes(  )
+    public static List<IRetrievalType> getRetrievalTypes(  )
     {
-        if ( _mapRetrievalTypes == null )
-        {
-            init(  );
-        }
-
-        return _mapRetrievalTypes;
+        return SpringContextService.getBeansOfType( IRetrievalType.class );
     }
 
     /**
-     * Get the retrieval type
+     * Get the retrieval type from a given id retrieval type
      * @param nIdRetrievalType the id retrieval type
-     * @return a {@link RetrievalType}
+     * @return an instance of {@link IRestrievalType}
      */
-    public IRetrievalType getRetrievalType( int nIdRetrievalType )
+    public static IRetrievalType getRetrievalType( int nIdRetrievalType )
     {
-        if ( _mapRetrievalTypes == null )
+        for ( IRetrievalType retrievalType : getRetrievalTypes(  ) )
         {
-            init(  );
+            if ( nIdRetrievalType == retrievalType.getIdType(  ) )
+            {
+                return retrievalType;
+            }
         }
 
-        return _mapRetrievalTypes.get( Integer.toString( nIdRetrievalType ) );
-    }
-
-    /**
-     * Init in case the map is null
-     */
-    private void init(  )
-    {
-        _mapRetrievalTypes = new HashMap<String, IRetrievalType>(  );
-
-        for ( IRetrievalType retrievalType : SpringContextService.getBeansOfType( IRetrievalType.class ) )
-        {
-            _mapRetrievalTypes.put( Integer.toString( retrievalType.getIdType(  ) ), retrievalType );
-        }
+        return null;
     }
 }

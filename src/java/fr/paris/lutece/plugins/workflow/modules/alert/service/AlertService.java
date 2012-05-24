@@ -44,36 +44,38 @@ import fr.paris.lutece.plugins.directory.business.RecordFieldHome;
 import fr.paris.lutece.plugins.directory.business.RecordHome;
 import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import fr.paris.lutece.plugins.workflow.business.ActionHome;
-import fr.paris.lutece.plugins.workflow.business.ResourceHistory;
-import fr.paris.lutece.plugins.workflow.business.ResourceHistoryHome;
-import fr.paris.lutece.plugins.workflow.business.ResourceWorkflow;
-import fr.paris.lutece.plugins.workflow.business.ResourceWorkflowHome;
-import fr.paris.lutece.plugins.workflow.business.StateFilter;
-import fr.paris.lutece.plugins.workflow.business.StateHome;
-import fr.paris.lutece.plugins.workflow.business.task.ITask;
-import fr.paris.lutece.plugins.workflow.business.task.TaskHome;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.AlertHome;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.IAlertDAO;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
-import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
-import fr.paris.lutece.plugins.workflow.service.WorkflowService;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
-import fr.paris.lutece.portal.business.workflow.Action;
-import fr.paris.lutece.portal.business.workflow.State;
+import fr.paris.lutece.plugins.workflowcore.business.action.Action;
+import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
+import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceWorkflow;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
+import fr.paris.lutece.plugins.workflowcore.service.action.IActionService;
+import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
+import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceWorkflowService;
+import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.ReferenceList;
 
 import org.apache.commons.lang.StringUtils;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 
 /**
@@ -81,10 +83,24 @@ import java.util.Locale;
  * AlertService
  *
  */
-public final class AlertService
+public final class AlertService implements IAlertService
 {
-    private static final String BEAN_ALERT_SERVICE = "workflow-alert.alertService";
+    public static final String BEAN_SERVICE = "workflow-alert.alertService";
     private List<Integer> _listAcceptedEntryTypesDate;
+    @Inject
+    private ITaskService _taskService;
+    @Inject
+    private IStateService _stateService;
+    @Inject
+    private IResourceWorkflowService _resourceWorkflowService;
+    @Inject
+    private IResourceHistoryService _resourceHistoryService;
+    @Inject
+    private IActionService _actionService;
+    @Inject
+    private ITaskAlertConfigService _taskAlertConfigService;
+    @Inject
+    private IAlertDAO _alertDAO;
 
     /**
      * Private constructor
@@ -95,75 +111,65 @@ public final class AlertService
         _listAcceptedEntryTypesDate = fillListEntryTypes( AlertConstants.PROPERTY_ACCEPTED_DIRECTORY_ENTRY_TYPES_DATE );
     }
 
-    /**
-     * Get the service
-     * @return the instance of the service
-     */
-    public static AlertService getService(  )
-    {
-        return (AlertService) SpringContextService.getPluginBean( AlertPlugin.PLUGIN_NAME, BEAN_ALERT_SERVICE );
-    }
-
     // CRUD
 
     /**
-     * Create a new alert
-     * @param alert the alert
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void create( Alert alert )
     {
         if ( alert != null )
         {
-            AlertHome.create( alert );
+            _alertDAO.insert( alert, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
         }
     }
 
     /**
-     * Remove an alert by id history
-     * @param nIdResourceHistory the id history
-     * @param nIdTask the id task
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void removeByHistory( int nIdResourceHistory, int nIdTask )
     {
-        AlertHome.removeByHistory( nIdResourceHistory, nIdTask );
+        _alertDAO.deleteByHistory( nIdResourceHistory, nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     /**
-     * Remove an alert by id task
-     * @param nIdTask the id task
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional( "workflow-alert.transactionManager" )
     public void removeByTask( int nIdTask )
     {
-        AlertHome.removeByTask( nIdTask );
+        _alertDAO.deleteByTask( nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     /**
-     * Find an alert
-     * @param nIdResourceHistory the id history
-     * @param nIdTask the id task
-     * @return an {@link Alert}
+     * {@inheritDoc}
      */
+    @Override
     public Alert find( int nIdResourceHistory, int nIdTask )
     {
-        return AlertHome.find( nIdResourceHistory, nIdTask );
+        return _alertDAO.load( nIdResourceHistory, nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     /**
-     * Find all alerts
-     * @return a list of {@link Alert}
+     * {@inheritDoc}
      */
+    @Override
     public List<Alert> findAll(  )
     {
-        return AlertHome.findAll(  );
+        return _alertDAO.selectAll( PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
 
     // CHECKS
 
     /**
-     * Check if the given entry type id is accepted for the date
-     * @param nIdEntryType the id entry type
-     * @return true if it is accepted, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean isEntryTypeDateAccepted( int nIdEntryType )
     {
         boolean bIsAccepted = false;
@@ -177,27 +183,23 @@ public final class AlertService
     }
 
     /**
-     * Check if the record has the same state before executing the action
-     * @param config the config
-     * @param record the record
-     * @param locale the locale
-     * @return true if the record has a valid state, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean isRecordStateValid( TaskAlertConfig config, Record record, Locale locale )
     {
         boolean bIsValid = false;
 
-        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-        ITask task = TaskHome.findByPrimaryKey( config.getIdTask(  ), pluginWorkflow, locale );
+        ITask task = _taskService.findByPrimaryKey( config.getIdTask(  ), locale );
 
         if ( task != null )
         {
-            Action action = ActionHome.findByPrimaryKey( task.getAction(  ).getId(  ), pluginWorkflow );
+            Action action = _actionService.findByPrimaryKey( task.getAction(  ).getId(  ) );
 
             if ( ( action != null ) && ( action.getStateAfter(  ) != null ) )
             {
-                ResourceWorkflow resourceWorkflow = ResourceWorkflowHome.findByPrimaryKey( record.getIdRecord(  ),
-                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ), pluginWorkflow );
+                ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( record.getIdRecord(  ),
+                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ) );
 
                 if ( ( resourceWorkflow != null ) && ( resourceWorkflow.getState(  ) != null ) &&
                         ( resourceWorkflow.getState(  ).getId(  ) == action.getStateAfter(  ).getId(  ) ) )
@@ -213,15 +215,14 @@ public final class AlertService
     // GET
 
     /**
-     * Get the list of entries from a given id task
-     * @param nIdTask the id task
-     * @return a list of IEntry
+     * {@inheritDoc}
      */
+    @Override
     public List<IEntry> getListEntries( int nIdTask )
     {
         Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
 
-        TaskAlertConfig config = TaskAlertConfigService.getService(  ).findByPrimaryKey( nIdTask );
+        TaskAlertConfig config = _taskAlertConfigService.findByPrimaryKey( nIdTask );
 
         List<IEntry> listEntries = new ArrayList<IEntry>(  );
 
@@ -237,11 +238,9 @@ public final class AlertService
     }
 
     /**
-     * Get the list of entries that have the accepted type (which are defined in <b>workflow-alert.properties</b>)
-     * @param nIdTask the id task
-     * @param locale the Locale
-     * @return a ReferenceList
+     * {@inheritDoc}
      */
+    @Override
     public ReferenceList getListEntriesDate( int nIdTask, Locale locale )
     {
         ReferenceList refenreceListEntries = new ReferenceList(  );
@@ -261,9 +260,9 @@ public final class AlertService
     }
 
     /**
-     * Get the list of directories
-     * @return a ReferenceList
+     * {@inheritDoc}
      */
+    @Override
     public ReferenceList getListDirectories(  )
     {
         Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
@@ -280,22 +279,20 @@ public final class AlertService
     }
 
     /**
-     * Get the list of states
-     * @param nIdAction the id action
-     * @return a ReferenceList
+     * {@inheritDoc}
      */
+    @Override
     public ReferenceList getListStates( int nIdAction )
     {
-        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
         ReferenceList referenceListStates = new ReferenceList(  );
-        Action action = ActionHome.findByPrimaryKey( nIdAction, pluginWorkflow );
+        Action action = _actionService.findByPrimaryKey( nIdAction );
 
         if ( ( action != null ) && ( action.getWorkflow(  ) != null ) )
         {
             StateFilter stateFilter = new StateFilter(  );
             stateFilter.setIdWorkflow( action.getWorkflow(  ).getId(  ) );
 
-            List<State> listStates = StateHome.getListStateByFilter( stateFilter, pluginWorkflow );
+            List<State> listStates = _stateService.getListStateByFilter( stateFilter );
 
             referenceListStates.addItem( DirectoryUtils.CONSTANT_ID_NULL, StringUtils.EMPTY );
             referenceListStates.addAll( ReferenceList.convert( listStates, AlertConstants.ID, AlertConstants.NAME, true ) );
@@ -305,20 +302,17 @@ public final class AlertService
     }
 
     /**
-     * Get the record from a given Alert
-     * @param alert the alert
-     * @return a {@link Record}
+     * {@inheritDoc}
      */
+    @Override
     public Record getRecord( Alert alert )
     {
         Record record = null;
 
         if ( alert != null )
         {
-            Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
             Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
-            ResourceHistory resourceHistory = ResourceHistoryHome.findByPrimaryKey( alert.getIdResourceHistory(  ),
-                    pluginWorkflow );
+            ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( alert.getIdResourceHistory(  ) );
 
             if ( ( resourceHistory != null ) &&
                     Record.WORKFLOW_RESOURCE_TYPE.equals( resourceHistory.getResourceType(  ) ) )
@@ -331,12 +325,9 @@ public final class AlertService
     }
 
     /**
-     * Get the date
-     * @param config the config
-     * @param nIdRecord the id record
-     * @param nIdDirectory the id directory
-     * @return the date
+     * {@inheritDoc}
      */
+    @Override
     public long getDate( TaskAlertConfig config, int nIdRecord, int nIdDirectory )
     {
         long lDate = 0;
@@ -355,24 +346,9 @@ public final class AlertService
     }
 
     /**
-     * Get the action
-     * @param nIdAction the id action
-     * @return the action
+     * {@inheritDoc}
      */
-    public Action getAction( int nIdAction )
-    {
-        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-
-        return ActionHome.findByPrimaryKey( nIdAction, pluginWorkflow );
-    }
-
-    /**
-     * Get the record field value
-     * @param nPosition the position of the entry
-     * @param nIdRecord the id record
-     * @param nIdDirectory the id directory
-     * @return the record field value
-     */
+    @Override
     public String getRecordFieldValue( int nPosition, int nIdRecord, int nIdDirectory )
     {
         String strRecordFieldValue = StringUtils.EMPTY;
@@ -414,23 +390,19 @@ public final class AlertService
     // ACTIONS
 
     /**
-     * Do change the record state
-     * @param config the config
-     * @param nIdRecord the id record
-     * @param alert the alert
+     * {@inheritDoc}
      */
+    @Override
     public void doChangeRecordState( TaskAlertConfig config, int nIdRecord, Alert alert )
     {
-        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-
         // The locale is not important. It is just used to fetch the task action id
         Locale locale = I18nService.getDefaultLocale(  );
-        ITask task = TaskHome.findByPrimaryKey( config.getIdTask(  ), pluginWorkflow, locale );
+        ITask task = _taskService.findByPrimaryKey( config.getIdTask(  ), locale );
 
         if ( task != null )
         {
-            State state = StateHome.findByPrimaryKey( config.getIdStateAfterDeadline(  ), pluginWorkflow );
-            Action action = ActionHome.findByPrimaryKey( task.getAction(  ).getId(  ), pluginWorkflow );
+            State state = _stateService.findByPrimaryKey( config.getIdStateAfterDeadline(  ) );
+            Action action = _actionService.findByPrimaryKey( task.getAction(  ).getId(  ) );
 
             if ( ( state != null ) && ( action != null ) )
             {
@@ -442,13 +414,13 @@ public final class AlertService
                 resourceHistory.setWorkFlow( action.getWorkflow(  ) );
                 resourceHistory.setCreationDate( WorkflowUtils.getCurrentTimestamp(  ) );
                 resourceHistory.setUserAccessCode( AlertConstants.USER_AUTO );
-                ResourceHistoryHome.create( resourceHistory, pluginWorkflow );
+                _resourceHistoryService.create( resourceHistory );
 
                 // Update Resource
-                ResourceWorkflow resourceWorkflow = ResourceWorkflowHome.findByPrimaryKey( nIdRecord,
-                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ), pluginWorkflow );
+                ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( nIdRecord,
+                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ) );
                 resourceWorkflow.setState( state );
-                ResourceWorkflowHome.update( resourceWorkflow, pluginWorkflow );
+                _resourceWorkflowService.update( resourceWorkflow );
 
                 // if new state have action automatic
                 WorkflowService.getInstance(  )

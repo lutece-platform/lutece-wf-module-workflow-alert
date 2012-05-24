@@ -36,10 +36,12 @@ package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
-import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
+import fr.paris.lutece.plugins.workflow.modules.alert.service.IAlertService;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.inject.Inject;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,15 +53,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class RetrievalTypeDirectoryEntry extends AbstractRetrievalType
 {
+    @Inject
+    private IAlertService _alertService;
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public Long getDate( TaskAlertConfig config, Record record )
     {
         if ( ( config != null ) && ( record != null ) && ( record.getDirectory(  ) != null ) )
         {
-            String strDate = AlertService.getService(  )
-                                         .getRecordFieldValue( config.getPositionEntryDirectoryDate(  ),
+            String strDate = _alertService.getRecordFieldValue( config.getPositionEntryDirectoryDate(  ),
                     record.getIdRecord(  ), record.getDirectory(  ).getIdDirectory(  ) );
 
             if ( StringUtils.isNotBlank( strDate ) )
@@ -74,6 +79,7 @@ public class RetrievalTypeDirectoryEntry extends AbstractRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public String checkConfigData( HttpServletRequest request )
     {
         String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );

@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-<beans>
+	<!-- Transaction Manager -->
+	<bean id="workflow-alert.transactionManager" class="fr.paris.lutece.portal.service.database.DAOUtilTransactionManager"
+		p:pluginName="workflow-alert" />
+	
 	<!-- DAO -->
 	<bean id="workflow-alert.taskAlertConfigDAO" class="fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfigDAO" />
 	<bean id="workflow-alert.alertDAO" class="fr.paris.lutece.plugins.workflow.modules.alert.business.AlertDAO" />
@@ -11,32 +23,24 @@
 	<bean id="workflow-alert.alertService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService" />
 
 	<!-- Retrieval type -->
-	<bean id="workflow-alert.retrievalTypeDirectoryEntry" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeDirectoryEntry">
-		<property name="idType" value="1" />
-		<property name="titleKey" value="module.workflow.alert.retrieval_type.directory_entry" />
-	</bean>
-	<bean id="workflow-alert.retrievalTypeCreationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeCreationDate">
-		<property name="idType" value="2" />
-		<property name="titleKey" value="module.workflow.alert.retrieval_type.creation_date" />
-	</bean>
-	<bean id="workflow-alert.retrievalTypeModificationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeModificationDate">
-		<property name="idType" value="3" />
-		<property name="titleKey" value="module.workflow.alert.retrieval_type.modification_date" />
-	</bean>
-	<bean id="workflow-alert.retrievalTypeFactory" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory">
-		<property name="retrievalTypes">
-			<map>
-				<entry key="1" value-ref="workflow-alert.retrievalTypeDirectoryEntry" />
-				<entry key="2" value-ref="workflow-alert.retrievalTypeCreationDate" />
-				<entry key="3" value-ref="workflow-alert.retrievalTypeModificationDate" />
-			</map>
-		</property>
-	</bean>
+	<bean id="workflow-alert.retrievalTypeDirectoryEntry" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeDirectoryEntry"
+		p:idType="1"
+		p:titleKey="module.workflow.alert.retrieval_type.directory_entry" />
+	<bean id="workflow-alert.retrievalTypeCreationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeCreationDate"
+		p:idType="2"
+		p:titleKey="module.workflow.alert.retrieval_type.creation_date" />
+	<bean id="workflow-alert.retrievalTypeModificationDate" class="fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeModificationDate"
+		p:idType="3"
+		p:titleKey="module.workflow.alert.retrieval_type.modification_date" />
 	
-	<!-- Tasks -->
-	<bean id="workflow-alert.taskAlert" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
-		<property name="key" value="taskAlert" />
-		<property name="titleI18nKey" value="module.workflow.alert.task_alert_title" />
-		<property name="className" value="fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlert"/>
-	</bean>
+	<!-- Task -->
+	<bean id="workflow-alert.taskTypeAlert" class="fr.paris.lutece.plugins.workflowcore.business.task.TaskType"
+		p:key="taskAlert"
+		p:titleI18nKey="module.workflow.alert.task_alert_title"
+		p:beanName="workflow-alert.taskAlert"
+		p:configRequired="true"
+		p:taskForAutomaticAction="true" />
+	<bean id="workflow-alert.taskAlert" class="fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlert" scope="prototype" />
+	<bean id="workflow-alert.alertTaskComponent" class="fr.paris.lutece.plugins.workflow.modules.alert.web.AlertTaskComponent" 
+		p:taskType-ref="workflow-alert.taskTypeAlert" />
 </beans>

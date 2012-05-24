@@ -37,9 +37,12 @@ import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService;
+import fr.paris.lutece.plugins.workflow.modules.alert.service.IAlertService;
+import fr.paris.lutece.plugins.workflow.modules.alert.service.ITaskAlertConfigService;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -61,8 +64,8 @@ public class AlertDaemon extends Daemon
     public void run(  )
     {
         StringBuilder sbLog = new StringBuilder(  );
-        TaskAlertConfigService configService = TaskAlertConfigService.getService(  );
-        AlertService alertService = AlertService.getService(  );
+        ITaskAlertConfigService configService = SpringContextService.getBean( TaskAlertConfigService.BEAN_SERVICE );
+        IAlertService alertService = SpringContextService.getBean( AlertService.BEAN_SERVICE );
 
         for ( Alert alert : alertService.findAll(  ) )
         {

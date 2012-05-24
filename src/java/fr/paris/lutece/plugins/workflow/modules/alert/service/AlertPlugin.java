@@ -44,11 +44,4 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 public class AlertPlugin extends PluginDefaultImplementation
 {
     public static final String PLUGIN_NAME = "workflow-alert";
-
-    /**
-     * Initialize the AlertPlugin
-     */
-    public void init(  )
-    {
-    }
 }

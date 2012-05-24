@@ -53,6 +53,7 @@ public abstract class AbstractRetrievalType implements IRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setIdType( int nIdType )
     {
         _nIdType = nIdType;
@@ -61,6 +62,7 @@ public abstract class AbstractRetrievalType implements IRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getIdType(  )
     {
         return _nIdType;
@@ -69,6 +71,7 @@ public abstract class AbstractRetrievalType implements IRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTitleKey( String strTitleKey )
     {
         _strTitleKey = strTitleKey;
@@ -77,6 +80,7 @@ public abstract class AbstractRetrievalType implements IRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTitleKey(  )
     {
         return _strTitleKey;
@@ -85,6 +89,7 @@ public abstract class AbstractRetrievalType implements IRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTitle( Locale locale )
     {
         if ( StringUtils.isNotBlank( _strTitleKey ) && ( locale != null ) )

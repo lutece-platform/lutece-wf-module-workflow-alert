@@ -60,6 +60,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void insert( TaskAlertConfig config, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
@@ -80,6 +81,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void store( TaskAlertConfig config, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -100,6 +102,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public TaskAlertConfig load( int nIdTask, Plugin plugin )
     {
         TaskAlertConfig config = null;
@@ -130,6 +133,7 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete( int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );

@@ -51,6 +51,7 @@ public class RetrievalTypeCreationDate extends AbstractRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public Long getDate( TaskAlertConfig config, Record record )
     {
         if ( record != null )
@@ -69,6 +70,7 @@ public class RetrievalTypeCreationDate extends AbstractRetrievalType
     /**
      * {@inheritDoc}
      */
+    @Override
     public String checkConfigData( HttpServletRequest request )
     {
         return null;

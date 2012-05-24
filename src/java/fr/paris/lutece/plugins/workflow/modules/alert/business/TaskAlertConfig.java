@@ -167,7 +167,7 @@ public class TaskAlertConfig
      */
     public Long getDate( Record record )
     {
-        IRetrievalType retrievalType = RetrievalTypeFactory.getFactory(  ).getRetrievalType( _nIdRetrievalType );
+        IRetrievalType retrievalType = RetrievalTypeFactory.getRetrievalType( _nIdRetrievalType );
 
         if ( retrievalType != null )
         {

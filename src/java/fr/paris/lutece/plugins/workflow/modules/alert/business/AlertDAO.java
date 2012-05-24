@@ -57,6 +57,7 @@ public class AlertDAO implements IAlertDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void insert( Alert alertValue, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
@@ -74,6 +75,7 @@ public class AlertDAO implements IAlertDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public Alert load( int nIdResourceHistory, int nIdTask, Plugin plugin )
     {
         Alert alert = null;
@@ -102,6 +104,7 @@ public class AlertDAO implements IAlertDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deleteByHistory( int nIdResourceHistory, int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_HISTORY, plugin );
@@ -116,6 +119,7 @@ public class AlertDAO implements IAlertDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deleteByTask( int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TASK, plugin );
@@ -127,6 +131,7 @@ public class AlertDAO implements IAlertDAO
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Alert> selectAll( Plugin plugin )
     {
         List<Alert> listAlerts = new ArrayList<Alert>(  );

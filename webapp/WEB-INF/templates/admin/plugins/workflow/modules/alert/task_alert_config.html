@@ -20,10 +20,9 @@
 	<#if retrieval_types?? && retrieval_types?has_content>
 		<p>
 			<label for="retrieval_type">#i18n{module.workflow.alert.task_alert_config.label_task_retrieval_type} * :</label>
-			<#list retrieval_types?keys as id_retrieval_type>
-				<#assign retrieval_type = retrieval_types[id_retrieval_type]>
-				<input type="radio" name="retrieval_type" value="${id_retrieval_type}"
-					<#if config?? && id_retrieval_type = "" + config.idRetrievalType>
+			<#list retrieval_types as retrieval_type>
+				<input type="radio" name="retrieval_type" value="${retrieval_type.idType!}"
+					<#if config?? && retrieval_type.idType = config.idRetrievalType>
 						checked="checked"
 					</#if>
 				/>&nbsp;${retrieval_type.getTitle( locale )}

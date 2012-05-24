@@ -31,52 +31,53 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval;
+package fr.paris.lutece.plugins.workflow.modules.alert.service;
 
-import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 
-import java.util.GregorianCalendar;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
  *
- * RetrievalTypeModificationDate
+ * ITaskAlertConfigService
  *
  */
-public class RetrievalTypeModificationDate extends AbstractRetrievalType
+public interface ITaskAlertConfigService
 {
     /**
-     * {@inheritDoc}
+     * Create a new config
+     * @param config the config
      */
-    @Override
-    public Long getDate( TaskAlertConfig config, Record record )
-    {
-        if ( record != null )
-        {
-            /*
-             * The modification date of the record is updated only after all
-             * tasks are executed. In other words, this task would retrieve
-             * the old modification date before the execution of the action.
-             * Ex : We have a record with
-             *  - modification date : 14/12/2012
-             *  - execution date of the task : 15/12/2012
-             * The reference date should not be 14/12/2012 but 15/12/2012.
-             */
-            return GregorianCalendar.getInstance(  ).getTimeInMillis(  );
-        }
-
-        return null;
-    }
+    @Transactional( "workflow-alert.transactionManager" )
+    void create( TaskAlertConfig config );
 
     /**
-     * {@inheritDoc}
+     * Update a config
+     * @param config the config
      */
-    @Override
-    public String checkConfigData( HttpServletRequest request )
-    {
-        return null;
-    }
+    @Transactional( "workflow-alert.transactionManager" )
+    void update( TaskAlertConfig config );
+
+    /**
+     * Remove a config
+     * @param nIdTask the task id
+     */
+    @Transactional( "workflow-alert.transactionManager" )
+    void remove( int nIdTask );
+
+    /**
+     * Find a config
+     * @param nIdTask the id task
+     * @return an instance of {@link TaskAlertConfig}
+     */
+    TaskAlertConfig findByPrimaryKey( int nIdTask );
+
+    /**
+     * Get all configs
+     * @return a list of {@link TaskAlertConfig}
+     */
+    List<TaskAlertConfig> findAll(  );
 }
