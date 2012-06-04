@@ -19,7 +19,8 @@
 	<bean id="workflow-alert.alertDAO" class="fr.paris.lutece.plugins.workflow.modules.alert.business.AlertDAO" />
 
 	<!-- Services -->
-	<bean id="workflow-alert.taskAlertConfigService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlertConfigService" />
+	<bean id="workflow-alert.taskAlertConfigService" class="fr.paris.lutece.plugins.workflowcore.service.config.TaskConfigService"
+		p:taskConfigDAO-ref="workflow-alert.taskAlertConfigDAO" />
 	<bean id="workflow-alert.alertService" class="fr.paris.lutece.plugins.workflow.modules.alert.service.AlertService" />
 
 	<!-- Retrieval type -->
@@ -38,9 +39,12 @@
 		p:key="taskAlert"
 		p:titleI18nKey="module.workflow.alert.task_alert_title"
 		p:beanName="workflow-alert.taskAlert"
+		p:configBeanName="workflow-alert.taskAlertConfig"
 		p:configRequired="true"
 		p:taskForAutomaticAction="true" />
 	<bean id="workflow-alert.taskAlert" class="fr.paris.lutece.plugins.workflow.modules.alert.service.TaskAlert" scope="prototype" />
+	<bean id="workflow-alert.taskAlertConfig" class="fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig" scope="prototype" />
 	<bean id="workflow-alert.alertTaskComponent" class="fr.paris.lutece.plugins.workflow.modules.alert.web.AlertTaskComponent" 
-		p:taskType-ref="workflow-alert.taskTypeAlert" />
+		p:taskType-ref="workflow-alert.taskTypeAlert"
+		p:taskConfigService-ref="workflow-alert.taskAlertConfigService" />
 </beans>

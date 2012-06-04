@@ -55,6 +55,7 @@ import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceWorkflow;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.action.IActionService;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
 import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceWorkflowService;
 import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
@@ -76,6 +77,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
@@ -98,7 +100,8 @@ public final class AlertService implements IAlertService
     @Inject
     private IActionService _actionService;
     @Inject
-    private ITaskAlertConfigService _taskAlertConfigService;
+    @Named( AlertConstants.BEAN_ALERT_CONFIG_SERVICE )
+    private ITaskConfigService _taskAlertConfigService;
     @Inject
     private IAlertDAO _alertDAO;
 

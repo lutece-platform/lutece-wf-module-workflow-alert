@@ -51,6 +51,9 @@ public final class AlertConstants
     public static final String HYPHEN = "-";
     public static final String USER_AUTO = "auto";
 
+    // BEAN
+    public static final String BEAN_ALERT_CONFIG_SERVICE = "workflow-alert.taskAlertConfigService";
+
     // PROPERTIES
     public static final String PROPERTY_ACCEPTED_DIRECTORY_ENTRY_TYPES_DATE = "workflow-alert.acceptedDirectoryEntryTypesDate";
     public static final String PROPERTY_LABEL_DIRECTORY = "module.workflow.alert.task_alert_config.label_task_directory";

@@ -41,15 +41,15 @@ import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.Alert;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
+import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
 import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
-import fr.paris.lutece.plugins.workflowcore.service.resource.ResourceHistoryService;
 import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
 import fr.paris.lutece.plugins.workflowcore.service.task.SimpleTask;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -58,6 +58,7 @@ import java.sql.Timestamp;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -70,8 +71,11 @@ import javax.servlet.http.HttpServletRequest;
 public class TaskAlert extends SimpleTask
 {
     // TEMPLATES
-    private IResourceHistoryService _resourceHistoryService = SpringContextService.getBean( ResourceHistoryService.BEAN_SERVICE );
-    private ITaskAlertConfigService _taskAlertConfigService = SpringContextService.getBean( TaskAlertConfigService.BEAN_SERVICE );
+    @Inject
+    private IResourceHistoryService _resourceHistoryService;
+    @Inject
+    @Named( AlertConstants.BEAN_ALERT_CONFIG_SERVICE )
+    private ITaskConfigService _taskAlertConfigService;
     @Inject
     private IAlertService _alertService;
     @Inject

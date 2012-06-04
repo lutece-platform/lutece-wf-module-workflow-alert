@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.service;
 
+import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 
 
 /**
@@ -44,4 +46,13 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 public class AlertPlugin extends PluginDefaultImplementation
 {
     public static final String PLUGIN_NAME = "workflow-alert";
+
+    /**
+     * Get the plugin
+     * @return the plugin
+     */
+    public static Plugin getPlugin(  )
+    {
+        return PluginService.getPlugin( PLUGIN_NAME );
+    }
 }

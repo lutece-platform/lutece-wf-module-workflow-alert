@@ -38,8 +38,6 @@ import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 
 import java.util.GregorianCalendar;
 
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  *
@@ -75,8 +73,8 @@ public class RetrievalTypeModificationDate extends AbstractRetrievalType
      * {@inheritDoc}
      */
     @Override
-    public String checkConfigData( HttpServletRequest request )
+    public boolean checkConfigData( TaskAlertConfig config )
     {
-        return null;
+        return true;
     }
 }

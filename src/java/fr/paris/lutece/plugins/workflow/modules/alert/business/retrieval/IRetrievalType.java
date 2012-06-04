@@ -38,8 +38,6 @@ import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  *
@@ -89,8 +87,8 @@ public interface IRetrievalType
 
     /**
      * Check if the config data is correctly configured
-     * @param request the HTTP servlet
+     * @param config the config
      * @return the error message if there is an error
      */
-    String checkConfigData( HttpServletRequest request );
+    boolean checkConfigData( TaskAlertConfig config );
 }

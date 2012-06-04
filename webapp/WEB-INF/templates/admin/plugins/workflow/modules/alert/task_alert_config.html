@@ -1,27 +1,27 @@
-<#assign id_directory = -1>
-<#assign position_entry_directory_date = -1>
-<#assign id_state_after_deadline = -1>
-<#assign nb_days_to_date = 0>
+<#assign idDirectory = -1>
+<#assign positionEntryDirectoryDate = -1>
+<#assign idStateAfterDeadline = -1>
+<#assign nbDaysToDate = 0>
 <#if config?exists>
-	<#assign id_directory = config.idDirectory>
-	<#assign position_entry_directory_date = config.positionEntryDirectoryDate>
-	<#assign id_state_after_deadline = config.idStateAfterDeadline>
-	<#assign nb_days_to_date = config.nbDaysToDate>
+	<#assign idDirectory = config.idDirectory>
+	<#assign positionEntryDirectoryDate = config.positionEntryDirectoryDate>
+	<#assign idStateAfterDeadline = config.idStateAfterDeadline>
+	<#assign nbDaysToDate = config.nbDaysToDate>
 </#if>
 
 <h2>#i18n{module.workflow.alert.task_alert_config.title}</h2>
 <div class="highlight-box">
 	<br />
 	<p>
-		<label for="id_directory">#i18n{module.workflow.alert.task_alert_config.label_task_directory} * :</label>
-		<@combo name="id_directory" items=list_directories default_value=id_directory />
+		<label for="idDirectory">#i18n{module.workflow.alert.task_alert_config.label_task_directory} * :</label>
+		<@combo name="idDirectory" items=list_directories default_value=idDirectory />
 		<input class="button" type="submit" name="apply" value="#i18n{module.workflow.alert.task_alert_config.label_apply}"/>
 	</p>
 	<#if retrieval_types?? && retrieval_types?has_content>
 		<p>
-			<label for="retrieval_type">#i18n{module.workflow.alert.task_alert_config.label_task_retrieval_type} * :</label>
+			<label for="idRetrievalType">#i18n{module.workflow.alert.task_alert_config.label_task_retrieval_type} * :</label>
 			<#list retrieval_types as retrieval_type>
-				<input type="radio" name="retrieval_type" value="${retrieval_type.idType!}"
+				<input type="radio" name="idRetrievalType" value="${retrieval_type.idType!}"
 					<#if config?? && retrieval_type.idType = config.idRetrievalType>
 						checked="checked"
 					</#if>
@@ -31,8 +31,8 @@
 	</#if>
 	<#if config?? && config.idRetrievalType = 1 && list_entries_date??>
 		<p>
-			<label for="position_entry_directory_date">#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date} * :</label>
-			<@combo name="position_entry_directory_date" items=list_entries_date default_value=position_entry_directory_date />&nbsp;
+			<label for="positionEntryDirectoryDate">#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date} * :</label>
+			<@combo name="positionEntryDirectoryDate" items=list_entries_date default_value=positionEntryDirectoryDate />&nbsp;
 			<br/>
 			<label>&nbsp;</label>
 			#i18n{module.workflow.alert.task_alert_config.label_task_entry_directory_date_comment}
@@ -40,16 +40,16 @@
 	</#if>
 	<#if list_states?exists>
 		<p>
-			<label for="id_state_after_deadline">#i18n{module.workflow.alert.task_alert_config.label_task_id_state_after_deadline} * :</label>
-			<@combo name="id_state_after_deadline" items=list_states default_value=id_state_after_deadline />&nbsp;
+			<label for="idStateAfterDeadline">#i18n{module.workflow.alert.task_alert_config.label_task_id_state_after_deadline} * :</label>
+			<@combo name="idStateAfterDeadline" items=list_states default_value=idStateAfterDeadline />&nbsp;
 			<br/>
 			<label>&nbsp;</label>
 			#i18n{module.workflow.alert.task_alert_config.label_task_id_state_after_deadline_comment}
 		</p>
 	</#if>
 	<p>
-		<label for="nb_days_to_date">#i18n{module.workflow.alert.task_alert_config.label_task_nb_days_to_date} * :</label>
-		<input type="text" name="nb_days_to_date" size="3" maxlength="3" value="${nb_days_to_date}" />
+		<label for="nbDaysToDate">#i18n{module.workflow.alert.task_alert_config.label_task_nb_days_to_date} * :</label>
+		<input type="text" name="nbDaysToDate" size="3" maxlength="3" value="${nbDaysToDate}" />
 		<br/>
 		<label>&nbsp;</label>
 		#i18n{module.workflow.alert.task_alert_config.label_task_nb_days_to_date_comment}

@@ -37,13 +37,10 @@ import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.IAlertService;
-import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
 
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -80,16 +77,8 @@ public class RetrievalTypeDirectoryEntry extends AbstractRetrievalType
      * {@inheritDoc}
      */
     @Override
-    public String checkConfigData( HttpServletRequest request )
+    public boolean checkConfigData( TaskAlertConfig config )
     {
-        String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
-        int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
-
-        if ( nPositionEntryDirectoryDate == DirectoryUtils.CONSTANT_ID_NULL )
-        {
-            return AlertConstants.PROPERTY_LABEL_POSITION_ENTRY_DIRECTORY_DATE;
-        }
-
-        return null;
+        return config.getPositionEntryDirectoryDate(  ) != DirectoryUtils.CONSTANT_ID_NULL;
     }
 }

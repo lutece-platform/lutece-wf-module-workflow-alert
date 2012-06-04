@@ -31,53 +31,47 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.alert.business;
+package fr.paris.lutece.plugins.workflow.modules.alert.util.annotation;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.plugins.workflow.modules.alert.util.validation.AlertConfigValidator;
 
-import java.util.List;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 /**
  *
- * ITaskAlertConfigDAO
+ * This annotation is used to add a validation constraint
+ * on class level of the class TaskNotifyCRMConfig.
  *
  */
-public interface ITaskAlertConfigDAO
+@Target( ElementType.TYPE )
+@Retention( RetentionPolicy.RUNTIME )
+@Constraint( validatedBy = AlertConfigValidator.class )
+@Documented
+public @interface AlertConfig
 {
     /**
-     * Insert a new task config
-     * @param config the task config
-     * @param plugin the plugin
+     * Message of the annotation
      */
-    void insert( TaskAlertConfig config, Plugin plugin );
-
+    String message(  ) default "The task is not well configured.";
     /**
-     * Update a task config
-     * @param config the task config
-     * @param plugin the plugin
+     * Group parameters
      */
-    void store( TaskAlertConfig config, Plugin plugin );
-
+    Class<?>[] groups(  ) default 
+    {
+    }
+    ;
     /**
-     * Load a task config
-     * @param nIdTask the task id
-     * @param plugin the plugin
-     * @return the task config
+     * Payload
      */
-    TaskAlertConfig load( int nIdTask, Plugin plugin );
-
-    /**
-     * Delete the task config
-     * @param nIdTask the id of the task
-     * @param plugin le plugin
-     */
-    void delete( int nIdTask, Plugin plugin );
-
-    /**
-     * Load the list of task config
-     * @param plugin le plugin
-     * @return List of TaskNotifyDirectoryConfig
-     */
-    List<TaskAlertConfig> loadAll( Plugin plugin );
+    Class<?extends Payload>[] payload(  ) default 
+    {
+    }
+    ;
 }

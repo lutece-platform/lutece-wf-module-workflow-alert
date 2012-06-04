@@ -36,6 +36,11 @@ package fr.paris.lutece.plugins.workflow.modules.alert.business;
 import fr.paris.lutece.plugins.directory.business.Record;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.IRetrievalType;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory;
+import fr.paris.lutece.plugins.workflow.modules.alert.util.annotation.AlertConfig;
+import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -43,32 +48,21 @@ import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.Retriev
  * TaskAlertConfig
  *
  */
-public class TaskAlertConfig
+@AlertConfig
+public class TaskAlertConfig extends TaskConfig
 {
-    private int _nIdTask;
+    @NotNull
+    @Min( 1 )
     private int _nIdDirectory;
+    @NotNull
+    @Min( 1 )
     private int _nIdStateAfterDeadline;
     private int _nPositionEntryDirectoryDate;
+    @NotNull
     private int _nNbDaysToDate;
+    @NotNull
+    @Min( 1 )
     private int _nIdRetrievalType;
-
-    /**
-     * Get the ID task
-     * @return id Task
-     */
-    public int getIdTask(  )
-    {
-        return _nIdTask;
-    }
-
-    /**
-     * Set id Task
-     * @param nIdTask id task
-     */
-    public void setIdTask( int nIdTask )
-    {
-        _nIdTask = nIdTask;
-    }
 
     /**
      * Set the id directory

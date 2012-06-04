@@ -33,11 +33,9 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.plugins.workflow.modules.alert.service.AlertPlugin;
+import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfigDAO;
 import fr.paris.lutece.util.sql.DAOUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -45,7 +43,7 @@ import java.util.List;
  * TaskAlertConfigDAO
  *
  */
-public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
+public class TaskAlertConfigDAO implements ITaskConfigDAO<TaskAlertConfig>
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date, id_retrieval_type " +
         " FROM task_alert_cf  WHERE id_task = ? ";
@@ -54,16 +52,14 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE task_alert_cf SET id_directory = ?, id_state_after_deadline = ?, position_directory_entry_date = ?, nb_days_to_date = ?, id_retrieval_type = ? " +
         " WHERE id_task = ? ";
     private static final String SQL_QUERY_DELETE = " DELETE FROM task_alert_cf WHERE id_task = ? ";
-    private static final String SQL_QUERY_FIND_ALL = " SELECT id_task, id_directory, id_state_after_deadline, position_directory_entry_date, nb_days_to_date, use_creation_date, use_creation_date " +
-        " FROM task_alert_cf ";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public synchronized void insert( TaskAlertConfig config, Plugin plugin )
+    public synchronized void insert( TaskAlertConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AlertPlugin.getPlugin(  ) );
 
         int nIndex = 1;
 
@@ -82,9 +78,9 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
      * {@inheritDoc}
      */
     @Override
-    public void store( TaskAlertConfig config, Plugin plugin )
+    public void store( TaskAlertConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, AlertPlugin.getPlugin(  ) );
 
         int nIndex = 1;
 
@@ -103,10 +99,10 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
      * {@inheritDoc}
      */
     @Override
-    public TaskAlertConfig load( int nIdTask, Plugin plugin )
+    public TaskAlertConfig load( int nIdTask )
     {
         TaskAlertConfig config = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, AlertPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
 
@@ -134,41 +130,12 @@ public class TaskAlertConfigDAO implements ITaskAlertConfigDAO
      * {@inheritDoc}
      */
     @Override
-    public void delete( int nIdTask, Plugin plugin )
+    public void delete( int nIdTask )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, AlertPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<TaskAlertConfig> loadAll( Plugin plugin )
-    {
-        List<TaskAlertConfig> configList = new ArrayList<TaskAlertConfig>(  );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin );
-
-        daoUtil.executeQuery(  );
-
-        int nIndex = 1;
-
-        if ( daoUtil.next(  ) )
-        {
-            TaskAlertConfig config = new TaskAlertConfig(  );
-            config.setIdTask( daoUtil.getInt( nIndex++ ) );
-            config.setIdDirectory( daoUtil.getInt( nIndex++ ) );
-            config.setIdStateAfterDeadline( daoUtil.getInt( nIndex++ ) );
-            config.setPositionEntryDirectoryDate( daoUtil.getInt( nIndex++ ) );
-            config.setNbDaysToDate( daoUtil.getInt( nIndex++ ) );
-            config.setIdRetrievalType( daoUtil.getInt( nIndex++ ) );
-            configList.add( config );
-        }
-
-        daoUtil.free(  );
-
-        return configList;
     }
 }

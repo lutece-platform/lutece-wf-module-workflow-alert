@@ -33,30 +33,21 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.alert.web;
 
-import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
-import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.IRetrievalType;
 import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.IAlertService;
-import fr.paris.lutece.plugins.workflow.modules.alert.service.ITaskAlertConfigService;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
-import fr.paris.lutece.plugins.workflowcore.business.action.Action;
-import fr.paris.lutece.plugins.workflowcore.service.action.IActionService;
+import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
-import fr.paris.lutece.plugins.workflowcore.web.task.NoFormTaskComponent;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.message.AdminMessage;
-import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -70,64 +61,10 @@ public class AlertTaskComponent extends NoFormTaskComponent
 {
     private static final String TEMPLATE_TASK_ALERT_CONFIG = "admin/plugins/workflow/modules/alert/task_alert_config.html";
     @Inject
-    private ITaskAlertConfigService _taskAlertConfigService;
-    @Inject
-    private IActionService _actionService;
+    @Named( AlertConstants.BEAN_ALERT_CONFIG_SERVICE )
+    private ITaskConfigService _taskAlertConfigService;
     @Inject
     private IAlertService _alertService;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String doSaveConfig( HttpServletRequest request, Locale locale, ITask task )
-    {
-        String strError = checkAlertConfigParameter( request, locale, task );
-
-        if ( StringUtils.isBlank( strError ) )
-        {
-            // Fetch parameters
-            String strIdDirectory = request.getParameter( AlertConstants.PARAMETER_ID_DIRECTORY );
-            String strPositionEntryDirectoryDate = request.getParameter( AlertConstants.PARAMETER_POSITION_ENTRY_DIRECTORY_DATE );
-            String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
-            String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
-            String strIdRetrievalType = request.getParameter( AlertConstants.PARAMETER_RETRIEVAL_TYPE );
-
-            int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
-            int nPositionEntryDirectoryDate = DirectoryUtils.convertStringToInt( strPositionEntryDirectoryDate );
-            int nIdStateAfterDeadline = DirectoryUtils.convertStringToInt( strIdStateAfterDeadline );
-            int nNbDaysToDate = Integer.parseInt( strNbDaysToDate );
-            int nIdRetrievalType = DirectoryUtils.convertStringToInt( strIdRetrievalType );
-
-            // In case there are no errors, then the config is created/updated
-            boolean bCreate = false;
-            TaskAlertConfig config = _taskAlertConfigService.findByPrimaryKey( task.getId(  ) );
-
-            if ( config == null )
-            {
-                config = new TaskAlertConfig(  );
-                config.setIdTask( task.getId(  ) );
-                bCreate = true;
-            }
-
-            config.setIdDirectory( nIdDirectory );
-            config.setPositionEntryDirectoryDate( nPositionEntryDirectoryDate );
-            config.setIdStateAfterDeadline( nIdStateAfterDeadline );
-            config.setNbDaysToDate( nNbDaysToDate );
-            config.setIdRetrievalType( nIdRetrievalType );
-
-            if ( bCreate )
-            {
-                _taskAlertConfigService.create( config );
-            }
-            else
-            {
-                _taskAlertConfigService.update( config );
-            }
-        }
-
-        return strError;
-    }
 
     /**
      * {@inheritDoc}
@@ -165,101 +102,5 @@ public class AlertTaskComponent extends NoFormTaskComponent
     public String getTaskInformationXml( int nIdHistory, HttpServletRequest request, Locale locale, ITask task )
     {
         return null;
-    }
-
-    /**
-    * Check if the config is well configured
-    * @param request the HTTP request
-    * @param locale the Locale
-    * @param task the task
-    * @return null if it is well configured, the label of the field that is not well configured otherwise
-    */
-    private String checkAlertConfigParameter( HttpServletRequest request, Locale locale, ITask task )
-    {
-        String strError = null;
-
-        // Fetch parameters
-        String strIdDirectory = request.getParameter( AlertConstants.PARAMETER_ID_DIRECTORY );
-        String strIdStateAfterDeadline = request.getParameter( AlertConstants.PARAMETER_ID_STATE_AFTER_DEADLINE );
-        String strNbDaysToDate = request.getParameter( AlertConstants.PARAMETER_NB_DAYS_TO_DATE );
-        String strApply = request.getParameter( AlertConstants.PARAMETER_APPLY );
-        String strIdRetrievalType = request.getParameter( AlertConstants.PARAMETER_RETRIEVAL_TYPE );
-
-        int nIdDirectory = DirectoryUtils.convertStringToInt( strIdDirectory );
-        int nIdStateAfterDeadline = DirectoryUtils.convertStringToInt( strIdStateAfterDeadline );
-        int nIdRetrievalType = DirectoryUtils.convertStringToInt( strIdRetrievalType );
-
-        // Check if the AdminUser clicked on "Apply" or on "Save"
-        if ( StringUtils.isEmpty( strApply ) )
-        {
-            // Check the required fields
-            String strRequiredField = StringUtils.EMPTY;
-
-            if ( nIdDirectory == DirectoryUtils.CONSTANT_ID_NULL )
-            {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_DIRECTORY;
-            }
-            else if ( StringUtils.isBlank( strIdRetrievalType ) || !StringUtils.isNumeric( strIdRetrievalType ) )
-            {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_RETRIEVAL_TYPE;
-            }
-            else if ( nIdStateAfterDeadline == DirectoryUtils.CONSTANT_ID_NULL )
-            {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_ID_STATE_AFTER_DEADLINE;
-            }
-            else if ( StringUtils.isBlank( strNbDaysToDate ) )
-            {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_NB_DAYS_TO_DATE;
-            }
-
-            try
-            {
-                Integer.parseInt( strNbDaysToDate );
-            }
-            catch ( NumberFormatException e )
-            {
-                strRequiredField = AlertConstants.PROPERTY_LABEL_NB_DAYS_TO_DATE;
-
-                Object[] tabRequiredFields = { I18nService.getLocalizedString( strRequiredField, locale ) };
-
-                return AdminMessageService.getMessageUrl( request, AlertConstants.MESSAGE_ERROR_INVALID_NUMBER,
-                    tabRequiredFields, AdminMessage.TYPE_STOP );
-            }
-
-            if ( StringUtils.isBlank( strRequiredField ) )
-            {
-                IRetrievalType retrievalType = RetrievalTypeFactory.getRetrievalType( nIdRetrievalType );
-
-                if ( retrievalType == null )
-                {
-                    strRequiredField = AlertConstants.PROPERTY_LABEL_RETRIEVAL_TYPE;
-                }
-                else
-                {
-                    strRequiredField = retrievalType.checkConfigData( request );
-                }
-            }
-
-            if ( StringUtils.isNotBlank( strRequiredField ) )
-            {
-                Object[] tabRequiredFields = { I18nService.getLocalizedString( strRequiredField, locale ) };
-                strError = AdminMessageService.getMessageUrl( request, AlertConstants.MESSAGE_MANDATORY_FIELD,
-                        tabRequiredFields, AdminMessage.TYPE_STOP );
-            }
-
-            if ( StringUtils.isBlank( strError ) )
-            {
-                Action action = _actionService.findByPrimaryKey( task.getAction(  ).getId(  ) );
-
-                if ( ( action != null ) && ( action.getStateBefore(  ) != null ) &&
-                        ( action.getStateBefore(  ).getId(  ) == nIdStateAfterDeadline ) )
-                {
-                    strError = AdminMessageService.getMessageUrl( request,
-                            AlertConstants.MESSAGE_STATE_AFTER_DEADLINE_SAME_STATE_BEFORE, AdminMessage.TYPE_STOP );
-                }
-            }
-        }
-
-        return strError;
     }
 }

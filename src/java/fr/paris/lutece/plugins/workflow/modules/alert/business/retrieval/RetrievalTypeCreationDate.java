@@ -38,8 +38,6 @@ import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
 
 import java.sql.Timestamp;
 
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  *
@@ -71,8 +69,8 @@ public class RetrievalTypeCreationDate extends AbstractRetrievalType
      * {@inheritDoc}
      */
     @Override
-    public String checkConfigData( HttpServletRequest request )
+    public boolean checkConfigData( TaskAlertConfig config )
     {
-        return null;
+        return true;
     }
 }

@@ -31,53 +31,45 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.alert.service;
+package fr.paris.lutece.plugins.workflow.modules.alert.util.validation;
 
 import fr.paris.lutece.plugins.workflow.modules.alert.business.TaskAlertConfig;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.IRetrievalType;
+import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.RetrievalTypeFactory;
+import fr.paris.lutece.plugins.workflow.modules.alert.util.annotation.AlertConfig;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 
 /**
  *
- * ITaskAlertConfigService
+ * Validator that checks the validity of the configuration.
  *
  */
-public interface ITaskAlertConfigService
+public class AlertConfigValidator implements ConstraintValidator<AlertConfig, TaskAlertConfig>
 {
     /**
-     * Create a new config
-     * @param config the config
+     * {@inheritDoc}
      */
-    @Transactional( "workflow-alert.transactionManager" )
-    void create( TaskAlertConfig config );
+    @Override
+    public void initialize( AlertConfig constraintAnnotation )
+    {
+    }
 
     /**
-     * Update a config
-     * @param config the config
+     * {@inheritDoc}
      */
-    @Transactional( "workflow-alert.transactionManager" )
-    void update( TaskAlertConfig config );
+    @Override
+    public boolean isValid( TaskAlertConfig config, ConstraintValidatorContext context )
+    {
+        IRetrievalType retrievalType = RetrievalTypeFactory.getRetrievalType( config.getIdRetrievalType(  ) );
 
-    /**
-     * Remove a config
-     * @param nIdTask the task id
-     */
-    @Transactional( "workflow-alert.transactionManager" )
-    void remove( int nIdTask );
+        if ( retrievalType != null )
+        {
+            return retrievalType.checkConfigData( config );
+        }
 
-    /**
-     * Find a config
-     * @param nIdTask the id task
-     * @return an instance of {@link TaskAlertConfig}
-     */
-    TaskAlertConfig findByPrimaryKey( int nIdTask );
-
-    /**
-     * Get all configs
-     * @return a list of {@link TaskAlertConfig}
-     */
-    List<TaskAlertConfig> findAll(  );
+        return false;
+    }
 }
