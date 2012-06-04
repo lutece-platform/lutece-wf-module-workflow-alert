@@ -40,10 +40,10 @@ import fr.paris.lutece.plugins.workflow.modules.alert.business.retrieval.Retriev
 import fr.paris.lutece.plugins.workflow.modules.alert.service.IAlertService;
 import fr.paris.lutece.plugins.workflow.modules.alert.service.ITaskAlertConfigService;
 import fr.paris.lutece.plugins.workflow.modules.alert.util.constants.AlertConstants;
-import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.service.action.IActionService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
+import fr.paris.lutece.plugins.workflowcore.web.task.NoFormTaskComponent;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
