@@ -120,7 +120,7 @@ public final class AlertService implements IAlertService
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-alert.transactionManager" )
+    @Transactional( AlertPlugin.BEAN_TRANSACTION_MANAGER )
     public void create( Alert alert )
     {
         if ( alert != null )
@@ -133,7 +133,7 @@ public final class AlertService implements IAlertService
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-alert.transactionManager" )
+    @Transactional( AlertPlugin.BEAN_TRANSACTION_MANAGER )
     public void removeByHistory( int nIdResourceHistory, int nIdTask )
     {
         _alertDAO.deleteByHistory( nIdResourceHistory, nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
@@ -143,7 +143,7 @@ public final class AlertService implements IAlertService
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-alert.transactionManager" )
+    @Transactional( AlertPlugin.BEAN_TRANSACTION_MANAGER )
     public void removeByTask( int nIdTask )
     {
         _alertDAO.deleteByTask( nIdTask, PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
