@@ -68,10 +68,6 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.ReferenceList;
 
-import org.apache.commons.lang.StringUtils;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -79,11 +75,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 
 /**
- *
+ * 
  * AlertService
- *
+ * 
  */
 public final class AlertService implements IAlertService
 {
@@ -108,7 +107,7 @@ public final class AlertService implements IAlertService
     /**
      * Private constructor
      */
-    private AlertService(  )
+    private AlertService( )
     {
         // Init list accepted entry types for date
         _listAcceptedEntryTypesDate = fillListEntryTypes( AlertConstants.PROPERTY_ACCEPTED_DIRECTORY_ENTRY_TYPES_DATE );
@@ -162,7 +161,7 @@ public final class AlertService implements IAlertService
      * {@inheritDoc}
      */
     @Override
-    public List<Alert> findAll(  )
+    public List<Alert> findAll( )
     {
         return _alertDAO.selectAll( PluginService.getPlugin( AlertPlugin.PLUGIN_NAME ) );
     }
@@ -177,7 +176,7 @@ public final class AlertService implements IAlertService
     {
         boolean bIsAccepted = false;
 
-        if ( ( _listAcceptedEntryTypesDate != null ) && !_listAcceptedEntryTypesDate.isEmpty(  ) )
+        if ( ( _listAcceptedEntryTypesDate != null ) && !_listAcceptedEntryTypesDate.isEmpty( ) )
         {
             bIsAccepted = _listAcceptedEntryTypesDate.contains( nIdEntryType );
         }
@@ -193,19 +192,19 @@ public final class AlertService implements IAlertService
     {
         boolean bIsValid = false;
 
-        ITask task = _taskService.findByPrimaryKey( config.getIdTask(  ), locale );
+        ITask task = _taskService.findByPrimaryKey( config.getIdTask( ), locale );
 
         if ( task != null )
         {
-            Action action = _actionService.findByPrimaryKey( task.getAction(  ).getId(  ) );
+            Action action = _actionService.findByPrimaryKey( task.getAction( ).getId( ) );
 
-            if ( ( action != null ) && ( action.getStateAfter(  ) != null ) )
+            if ( ( action != null ) && ( action.getStateAfter( ) != null ) )
             {
-                ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( record.getIdRecord(  ),
-                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ) );
+                ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( record.getIdRecord( ),
+                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow( ).getId( ) );
 
-                if ( ( resourceWorkflow != null ) && ( resourceWorkflow.getState(  ) != null ) &&
-                        ( resourceWorkflow.getState(  ).getId(  ) == action.getStateAfter(  ).getId(  ) ) )
+                if ( ( resourceWorkflow != null ) && ( resourceWorkflow.getState( ) != null )
+                        && ( resourceWorkflow.getState( ).getId( ) == action.getStateAfter( ).getId( ) ) )
                 {
                     bIsValid = true;
                 }
@@ -227,12 +226,12 @@ public final class AlertService implements IAlertService
 
         TaskAlertConfig config = _taskAlertConfigService.findByPrimaryKey( nIdTask );
 
-        List<IEntry> listEntries = new ArrayList<IEntry>(  );
+        List<IEntry> listEntries = new ArrayList<IEntry>( );
 
         if ( config != null )
         {
-            EntryFilter entryFilter = new EntryFilter(  );
-            entryFilter.setIdDirectory( config.getIdDirectory(  ) );
+            EntryFilter entryFilter = new EntryFilter( );
+            entryFilter.setIdDirectory( config.getIdDirectory( ) );
 
             listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
         }
@@ -246,16 +245,16 @@ public final class AlertService implements IAlertService
     @Override
     public ReferenceList getListEntriesDate( int nIdTask, Locale locale )
     {
-        ReferenceList refenreceListEntries = new ReferenceList(  );
+        ReferenceList refenreceListEntries = new ReferenceList( );
         refenreceListEntries.addItem( DirectoryUtils.CONSTANT_ID_NULL, DirectoryUtils.EMPTY_STRING );
 
         for ( IEntry entry : getListEntries( nIdTask ) )
         {
-            int nIdEntryType = entry.getEntryType(  ).getIdType(  );
+            int nIdEntryType = entry.getEntryType( ).getIdType( );
 
             if ( isEntryTypeDateAccepted( nIdEntryType ) )
             {
-                refenreceListEntries.addItem( entry.getPosition(  ), buildReferenceEntryToString( entry, locale ) );
+                refenreceListEntries.addItem( entry.getPosition( ), buildReferenceEntryToString( entry, locale ) );
             }
         }
 
@@ -266,11 +265,11 @@ public final class AlertService implements IAlertService
      * {@inheritDoc}
      */
     @Override
-    public ReferenceList getListDirectories(  )
+    public ReferenceList getListDirectories( )
     {
         Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
         ReferenceList listDirectories = DirectoryHome.getDirectoryList( pluginDirectory );
-        ReferenceList refenreceListDirectories = new ReferenceList(  );
+        ReferenceList refenreceListDirectories = new ReferenceList( );
         refenreceListDirectories.addItem( DirectoryUtils.CONSTANT_ID_NULL, StringUtils.EMPTY );
 
         if ( listDirectories != null )
@@ -287,18 +286,19 @@ public final class AlertService implements IAlertService
     @Override
     public ReferenceList getListStates( int nIdAction )
     {
-        ReferenceList referenceListStates = new ReferenceList(  );
+        ReferenceList referenceListStates = new ReferenceList( );
         Action action = _actionService.findByPrimaryKey( nIdAction );
 
-        if ( ( action != null ) && ( action.getWorkflow(  ) != null ) )
+        if ( ( action != null ) && ( action.getWorkflow( ) != null ) )
         {
-            StateFilter stateFilter = new StateFilter(  );
-            stateFilter.setIdWorkflow( action.getWorkflow(  ).getId(  ) );
+            StateFilter stateFilter = new StateFilter( );
+            stateFilter.setIdWorkflow( action.getWorkflow( ).getId( ) );
 
             List<State> listStates = _stateService.getListStateByFilter( stateFilter );
 
             referenceListStates.addItem( DirectoryUtils.CONSTANT_ID_NULL, StringUtils.EMPTY );
-            referenceListStates.addAll( ReferenceList.convert( listStates, AlertConstants.ID, AlertConstants.NAME, true ) );
+            referenceListStates.addAll( ReferenceList
+                    .convert( listStates, AlertConstants.ID, AlertConstants.NAME, true ) );
         }
 
         return referenceListStates;
@@ -315,12 +315,12 @@ public final class AlertService implements IAlertService
         if ( alert != null )
         {
             Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
-            ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( alert.getIdResourceHistory(  ) );
+            ResourceHistory resourceHistory = _resourceHistoryService.findByPrimaryKey( alert.getIdResourceHistory( ) );
 
-            if ( ( resourceHistory != null ) &&
-                    Record.WORKFLOW_RESOURCE_TYPE.equals( resourceHistory.getResourceType(  ) ) )
+            if ( ( resourceHistory != null )
+                    && Record.WORKFLOW_RESOURCE_TYPE.equals( resourceHistory.getResourceType( ) ) )
             {
-                record = RecordHome.findByPrimaryKey( resourceHistory.getIdResource(  ), pluginDirectory );
+                record = RecordHome.findByPrimaryKey( resourceHistory.getIdResource( ), pluginDirectory );
             }
         }
 
@@ -337,7 +337,7 @@ public final class AlertService implements IAlertService
 
         if ( config != null )
         {
-            String strDate = getRecordFieldValue( config.getPositionEntryDirectoryDate(  ), nIdRecord, nIdDirectory );
+            String strDate = getRecordFieldValue( config.getPositionEntryDirectoryDate( ), nIdRecord, nIdDirectory );
 
             if ( StringUtils.isNotBlank( strDate ) )
             {
@@ -358,31 +358,31 @@ public final class AlertService implements IAlertService
         Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
 
         // RecordField
-        EntryFilter entryFilter = new EntryFilter(  );
+        EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setPosition( nPosition );
         entryFilter.setIdDirectory( nIdDirectory );
 
         List<IEntry> listEntries = EntryHome.getEntryList( entryFilter, pluginDirectory );
 
-        if ( ( listEntries != null ) && !listEntries.isEmpty(  ) )
+        if ( ( listEntries != null ) && !listEntries.isEmpty( ) )
         {
             IEntry entry = listEntries.get( 0 );
-            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter(  );
+            RecordFieldFilter recordFieldFilterEmail = new RecordFieldFilter( );
             recordFieldFilterEmail.setIdDirectory( nIdDirectory );
-            recordFieldFilterEmail.setIdEntry( entry.getIdEntry(  ) );
+            recordFieldFilterEmail.setIdEntry( entry.getIdEntry( ) );
             recordFieldFilterEmail.setIdRecord( nIdRecord );
 
             List<RecordField> listRecordFields = RecordFieldHome.getRecordFieldList( recordFieldFilterEmail,
                     pluginDirectory );
 
-            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty(  ) && ( listRecordFields.get( 0 ) != null ) )
+            if ( ( listRecordFields != null ) && !listRecordFields.isEmpty( ) && ( listRecordFields.get( 0 ) != null ) )
             {
                 RecordField recordFieldIdDemand = listRecordFields.get( 0 );
-                strRecordFieldValue = recordFieldIdDemand.getValue(  );
+                strRecordFieldValue = recordFieldIdDemand.getValue( );
 
-                if ( recordFieldIdDemand.getField(  ) != null )
+                if ( recordFieldIdDemand.getField( ) != null )
                 {
-                    strRecordFieldValue = recordFieldIdDemand.getField(  ).getTitle(  );
+                    strRecordFieldValue = recordFieldIdDemand.getField( ).getTitle( );
                 }
             }
         }
@@ -399,39 +399,42 @@ public final class AlertService implements IAlertService
     public void doChangeRecordState( TaskAlertConfig config, int nIdRecord, Alert alert )
     {
         // The locale is not important. It is just used to fetch the task action id
-        Locale locale = I18nService.getDefaultLocale(  );
-        ITask task = _taskService.findByPrimaryKey( config.getIdTask(  ), locale );
+        Locale locale = I18nService.getDefaultLocale( );
+        ITask task = _taskService.findByPrimaryKey( config.getIdTask( ), locale );
 
         if ( task != null )
         {
-            State state = _stateService.findByPrimaryKey( config.getIdStateAfterDeadline(  ) );
-            Action action = _actionService.findByPrimaryKey( task.getAction(  ).getId(  ) );
+            State state = _stateService.findByPrimaryKey( config.getIdStateAfterDeadline( ) );
+            Action action = _actionService.findByPrimaryKey( task.getAction( ).getId( ) );
 
             if ( ( state != null ) && ( action != null ) )
             {
                 // Create Resource History
-                ResourceHistory resourceHistory = new ResourceHistory(  );
+                ResourceHistory resourceHistory = new ResourceHistory( );
                 resourceHistory.setIdResource( nIdRecord );
                 resourceHistory.setResourceType( Record.WORKFLOW_RESOURCE_TYPE );
                 resourceHistory.setAction( action );
-                resourceHistory.setWorkFlow( action.getWorkflow(  ) );
-                resourceHistory.setCreationDate( WorkflowUtils.getCurrentTimestamp(  ) );
+                resourceHistory.setWorkFlow( action.getWorkflow( ) );
+                resourceHistory.setCreationDate( WorkflowUtils.getCurrentTimestamp( ) );
                 resourceHistory.setUserAccessCode( AlertConstants.USER_AUTO );
                 _resourceHistoryService.create( resourceHistory );
 
                 // Update Resource
                 ResourceWorkflow resourceWorkflow = _resourceWorkflowService.findByPrimaryKey( nIdRecord,
-                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow(  ).getId(  ) );
+                        Record.WORKFLOW_RESOURCE_TYPE, action.getWorkflow( ).getId( ) );
                 resourceWorkflow.setState( state );
                 _resourceWorkflowService.update( resourceWorkflow );
 
-                // if new state have action automatic
-                WorkflowService.getInstance(  )
-                               .executeActionAutomatic( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE,
-                    action.getWorkflow(  ).getId(  ), resourceWorkflow.getExternalParentId(  ) );
+                // If the new state has automatic reflexive actions
+                WorkflowService.getInstance( ).doProcessAutomaticReflexiveActions( nIdRecord,
+                        Record.WORKFLOW_RESOURCE_TYPE, state.getId( ), resourceWorkflow.getExternalParentId( ), locale );
+
+                // if new state has action automatic
+                WorkflowService.getInstance( ).executeActionAutomatic( nIdRecord, Record.WORKFLOW_RESOURCE_TYPE,
+                        action.getWorkflow( ).getId( ), resourceWorkflow.getExternalParentId( ) );
 
                 // Remove the Alert
-                removeByHistory( alert.getIdResourceHistory(  ), alert.getIdTask(  ) );
+                removeByHistory( alert.getIdResourceHistory( ), alert.getIdTask( ) );
             }
         }
     }
@@ -446,15 +449,15 @@ public final class AlertService implements IAlertService
      */
     private String buildReferenceEntryToString( IEntry entry, Locale locale )
     {
-        StringBuilder sbReferenceEntry = new StringBuilder(  );
-        sbReferenceEntry.append( entry.getPosition(  ) );
+        StringBuilder sbReferenceEntry = new StringBuilder( );
+        sbReferenceEntry.append( entry.getPosition( ) );
         sbReferenceEntry.append( AlertConstants.SPACE + AlertConstants.OPEN_BRACKET );
-        sbReferenceEntry.append( entry.getTitle(  ) );
+        sbReferenceEntry.append( entry.getTitle( ) );
         sbReferenceEntry.append( AlertConstants.SPACE + AlertConstants.HYPHEN + AlertConstants.SPACE );
-        sbReferenceEntry.append( I18nService.getLocalizedString( entry.getEntryType(  ).getTitleI18nKey(  ), locale ) );
+        sbReferenceEntry.append( I18nService.getLocalizedString( entry.getEntryType( ).getTitleI18nKey( ), locale ) );
         sbReferenceEntry.append( AlertConstants.CLOSED_BRACKET );
 
-        return sbReferenceEntry.toString(  );
+        return sbReferenceEntry.toString( );
     }
 
     /**
@@ -464,7 +467,7 @@ public final class AlertService implements IAlertService
      */
     private static List<Integer> fillListEntryTypes( String strPropertyEntryTypes )
     {
-        List<Integer> listEntryTypes = new ArrayList<Integer>(  );
+        List<Integer> listEntryTypes = new ArrayList<Integer>( );
         String strEntryTypes = AppPropertiesService.getProperty( strPropertyEntryTypes );
 
         if ( StringUtils.isNotBlank( strEntryTypes ) )

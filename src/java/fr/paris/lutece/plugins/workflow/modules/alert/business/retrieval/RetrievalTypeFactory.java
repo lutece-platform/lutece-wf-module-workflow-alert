@@ -64,7 +64,7 @@ public final class RetrievalTypeFactory
     /**
      * Get the retrieval type from a given id retrieval type
      * @param nIdRetrievalType the id retrieval type
-     * @return an instance of {@link IRestrievalType}
+     * @return an instance of {@link IRetrievalType}
      */
     public static IRetrievalType getRetrievalType( int nIdRetrievalType )
     {

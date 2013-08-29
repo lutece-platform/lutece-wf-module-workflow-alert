@@ -66,7 +66,7 @@ public class AlertDAO implements IAlertDAO
 
         daoUtil.setInt( nIndex++, alertValue.getIdResourceHistory(  ) );
         daoUtil.setInt( nIndex++, alertValue.getIdTask(  ) );
-        daoUtil.setTimestamp( nIndex++, alertValue.getDateReference(  ) );
+        daoUtil.setTimestamp( nIndex++, alertValue.getDateReference( ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -110,7 +110,7 @@ public class AlertDAO implements IAlertDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_HISTORY, plugin );
         int nIndex = 1;
         daoUtil.setInt( nIndex++, nIdResourceHistory );
-        daoUtil.setInt( nIndex++, nIdTask );
+        daoUtil.setInt( nIndex, nIdTask );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
