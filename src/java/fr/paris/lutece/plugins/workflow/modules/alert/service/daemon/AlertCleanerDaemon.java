@@ -44,49 +44,56 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
- *
+ * 
  * Daemon AlertCleanerDaemon
- *
+ * 
  */
 public class AlertCleanerDaemon extends Daemon
 {
     /**
      * Daemon's treatment method
      */
-    public void run(  )
+    public void run( )
     {
-        StringBuilder sbLog = new StringBuilder(  );
+        StringBuilder sbLog = new StringBuilder( );
         ITaskConfigService configService = SpringContextService.getBean( AlertConstants.BEAN_ALERT_CONFIG_SERVICE );
         IAlertService alertService = SpringContextService.getBean( AlertService.BEAN_SERVICE );
 
-        for ( Alert alert : alertService.findAll(  ) )
+        for ( Alert alert : alertService.findAll( ) )
         {
             Record record = alertService.getRecord( alert );
-            TaskAlertConfig config = configService.findByPrimaryKey( alert.getIdTask(  ) );
+            TaskAlertConfig config = configService.findByPrimaryKey( alert.getIdTask( ) );
 
-            Locale locale = I18nService.getDefaultLocale(  );
+            Locale locale = I18nService.getDefaultLocale( );
 
-            if ( ( record != null ) && ( config != null ) &&
-                    !alertService.isRecordStateValid( config, record, locale ) )
+            if ( record != null && config != null )
             {
-                sbLog.append( "\n- Cleaning alert (ID record : " + record.getIdRecord(  ) + ", ID history : " +
-                    alert.getIdResourceHistory(  ) + ", ID task : " + alert.getIdTask(  ) + ")" );
-                // Remove the Alert
-                alertService.removeByHistory( alert.getIdResourceHistory(  ), alert.getIdTask(  ) );
+                if ( !alertService.isRecordStateValid( config, record, locale ) )
+                {
+                    sbLog.append( "\n- Cleaning alert (ID record : " + record.getIdRecord( ) + ", ID history : "
+                            + alert.getIdResourceHistory( ) + ", ID task : " + alert.getIdTask( ) + ")" );
+                    // Remove the Alert
+                    alertService.removeByHistory( alert.getIdResourceHistory( ), alert.getIdTask( ) );
+                }
+            }
+            else
+            {
+                // If the record is null or the config is null, we remove the alert
+                alertService.removeByHistory( alert.getIdResourceHistory( ), alert.getIdTask( ) );
             }
         }
 
-        if ( StringUtils.isBlank( sbLog.toString(  ) ) )
+        if ( StringUtils.isBlank( sbLog.toString( ) ) )
         {
             sbLog.append( "\nNo alert to clean." );
         }
 
-        setLastRunLogs( sbLog.toString(  ) );
+        setLastRunLogs( sbLog.toString( ) );
     }
 }
