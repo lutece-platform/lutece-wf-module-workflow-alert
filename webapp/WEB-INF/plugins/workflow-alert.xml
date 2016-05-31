@@ -2,7 +2,7 @@
     <!-- Plugin Informations -->
     <name>workflow-alert</name>
     <class>fr.paris.lutece.plugins.workflow.modules.alert.service.AlertPlugin</class>
-    <version>3.1.1</version>
+    <version>3.1.2-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
